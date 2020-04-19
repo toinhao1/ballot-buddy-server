@@ -13,12 +13,14 @@
 	"author": "Anthony Silveira",
 	"license": "ISC",
 	"dependencies": {
-		"@typegoose/typegoose": "^6.4.0",
 		"@types/mongoose": "^5.7.10",
 		"body-parser": "^1.19.0",
 		"cors": "^2.8.5",
 		"dotenv": "^8.2.0",
 		"express": "^4.17.1",
+		"express-graphql": "^0.9.0",
+		"graphql": "^15.0.0",
+		"mongodb": "^3.5.6",
 		"mongoose": "^5.9.7",
 		"morgan": "^1.10.0",
 		"reflect-metadata": "^0.1.13",
@@ -26,6 +28,7 @@
 		"typescript": "^3.8.3"
 	},
 	"devDependencies": {
+		"@shelf/jest-mongodb": "^1.1.5",
 		"@types/body-parser": "^1.19.0",
 		"@types/cors": "^2.8.6",
 		"@types/dotenv": "^8.2.0",
@@ -35,6 +38,7 @@
 		"@types/node": "^13.11.0",
 		"@types/supertest": "^2.0.8",
 		"jest": "^25.2.7",
+		"mongodb-memory-server": "^6.5.2",
 		"nodemon": "^2.0.2",
 		"supertest": "^4.0.2",
 		"ts-jest": "^25.3.1",

@@ -5,6 +5,11 @@ import mongoose from 'mongoose';
 import bodyParser from 'body-parser'
 import logger from 'morgan'
 import cors from 'cors'
+import passport from 'passport'
+
+import userRouter from './routes/users'
+
+import { PassportConfig } from './config/passport'
 
 const app = express();
 const dbURL = `${String(process.env.MONGODB_URL)}`
@@ -24,6 +29,10 @@ mongoose
     console.log(err);
   });
 
+// Initilize passport
+app.use(passport.initialize())
+PassportConfig()
+
 //Body parser middleware
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
@@ -33,9 +42,8 @@ app.use(cors());
 //Logs activity to the console.
 app.use(logger('combined'));
 
-app.get('/', (req, res) => {
-  res.send('The sedulous hyena ate the antelope!');
-});
+// routes for all user based functionality
+app.use(userRouter)
 
 const port = Number(process.env.PORT) || 5000;
 app.listen(port, () => console.log(`server is listening on ${port}`));

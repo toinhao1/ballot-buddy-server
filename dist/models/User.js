@@ -13,14 +13,18 @@ const UserSchema = new mongoose_1.Schema({
         type: String,
         required: true,
         unique: true,
+        trim: true,
+        lowercase: true
     },
     name: {
         type: String,
         required: false,
     },
-    oAuthPartner: {
+    password: {
         type: String,
         required: true,
-    }
+        trim: true
+    },
 }, { timestamps: true });
-exports.default = mongoose_1.default.model('User', UserSchema);
+const User = mongoose_1.default.model('User', UserSchema);
+exports.default = User;

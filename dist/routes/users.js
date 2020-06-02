@@ -21,6 +21,7 @@ const userRouter = express_1.Router();
 userRouter.post('/sign-up', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const email = req.body.email;
     const password = req.body.password;
+    console.log('Running');
     try {
         const userAlreadyExists = User_1.default.findOne({ email: email });
         if (userAlreadyExists) {
@@ -43,7 +44,7 @@ userRouter.post('/sign-up', (req, res) => __awaiter(void 0, void 0, void 0, func
     }
 }));
 // route to sign in
-userRouter.post('login', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+userRouter.post('/login', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const email = req.body.email;
     const password = req.body.password;
     try {

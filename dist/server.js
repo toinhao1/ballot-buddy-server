@@ -40,6 +40,9 @@ app.use(cors_1.default());
 //Logs activity to the console.
 app.use(morgan_1.default('combined'));
 // routes for all user based functionality
-app.use(users_1.default);
+app.use('/user', users_1.default);
+app.use('/', (req, res) => {
+    res.json("This is the BallotBuddy server endpoint!");
+});
 const port = Number(process.env.PORT) || 5000;
 app.listen(port, () => console.log(`server is listening on ${port}`));

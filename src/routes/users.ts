@@ -11,7 +11,7 @@ const userRouter = Router()
 userRouter.post('/sign-up', async (req, res) => {
   const email = req.body.email;
   const password = req.body.password;
-
+  console.log('Running')
   try {
     const userAlreadyExists = User.findOne({ email: email })
 
@@ -39,7 +39,7 @@ userRouter.post('/sign-up', async (req, res) => {
 })
 
 // route to sign in
-userRouter.post('login', async (req, res) => {
+userRouter.post('/login', async (req, res) => {
   const email: string = req.body.email;
   const password: string = req.body.password;
   try {

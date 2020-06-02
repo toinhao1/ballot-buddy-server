@@ -43,7 +43,11 @@ app.use(cors());
 app.use(logger('combined'));
 
 // routes for all user based functionality
-app.use(userRouter)
+app.use('/user', userRouter)
+
+app.use('/', (req, res) => {
+  res.json("This is the BallotBuddy server endpoint!")
+})
 
 const port = Number(process.env.PORT) || 5000;
 app.listen(port, () => console.log(`server is listening on ${port}`));

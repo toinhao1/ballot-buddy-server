@@ -21,11 +21,10 @@ const userRouter = express_1.Router();
 userRouter.post('/sign-up', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const email = req.body.email;
     const password = req.body.password;
-    console.log('Running');
     try {
-        const userAlreadyExists = User_1.default.findOne({ email: email });
+        const userAlreadyExists = yield User_1.default.findOne({ email: email });
         if (userAlreadyExists) {
-            return res.status(400).json("Email is already in use, please sign in.");
+            return res.send({ status: 400, error: "Email is already in use, please sign in." });
         }
         const newUser = new User_1.default({
             email: email,
@@ -50,15 +49,15 @@ userRouter.post('/login', (req, res) => __awaiter(void 0, void 0, void 0, functi
     try {
         const user = yield User_1.default.findOne({ email: email });
         if (!user) {
-            return res.status(404).json("Email not found");
+            return res.send({ status: 400, error: "Email not found." });
         }
         const isMatch = yield bcryptjs_1.compare(password, user.password);
         if (isMatch) {
-            let token = jsonwebtoken_1.sign({ id: user.id, email: user.email }, String(process.env.PASSPORT_SECRET), { expiresIn: '10080m' });
-            res.json({ success: true, token: 'Bearer ' + token });
+            let token = jsonwebtoken_1.sign({ id: user.id, email: user.email }, String(process.env.PASSPORT_SECRET), { expiresIn: 36000 });
+            res.json({ success: true, token: 'Bearer ' + token, userId: user.id });
         }
         else {
-            return res.status(400).json("Incorrect password");
+            return res.send({ status: 400, error: "Incorrect password" });
         }
     }
     catch (err) {

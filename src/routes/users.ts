@@ -11,12 +11,11 @@ const userRouter = Router()
 userRouter.post('/sign-up', async (req, res) => {
   const email = req.body.email;
   const password = req.body.password;
-  console.log('Running')
   try {
-    const userAlreadyExists = User.findOne({ email: email })
+    const userAlreadyExists = await User.findOne({ email: email })
 
     if (userAlreadyExists) {
-      return res.status(400).json("Email is already in use, please sign in.")
+      return res.send({ status: 400, error: "Email is already in use, please sign in." })
     }
     const newUser = new User({
       email: email,
@@ -45,19 +44,19 @@ userRouter.post('/login', async (req, res) => {
   try {
     const user = await User.findOne({ email: email })
     if (!user) {
-      return res.status(404).json("Email not found")
+      return res.send({ status: 400, error: "Email not found." })
     }
     const isMatch = await compare(password, user.password)
     if (isMatch) {
       let token = sign(
         { id: user.id, email: user.email },
         String(process.env.PASSPORT_SECRET),
-        { expiresIn: '10080m' }
+        { expiresIn: 36000 }
       );
-      res.json({ success: true, token: 'Bearer ' + token })
+      res.json({ success: true, token: 'Bearer ' + token, userId: user.id })
 
     } else {
-      return res.status(400).json("Incorrect password")
+      return res.send({ status: 400, error: "Incorrect password" })
     }
 
   } catch (err) {

@@ -1,4 +1,4 @@
-import { Router } from 'express'
+import { Router, Request, Response } from 'express'
 import { hash, genSalt, compare } from 'bcryptjs'
 import { sign } from 'jsonwebtoken'
 import { authenticate } from 'passport'
@@ -8,14 +8,14 @@ import User from '../models/User'
 const userRouter = Router()
 
 // route to SignUp a new user
-userRouter.post('/sign-up', async (req, res) => {
+userRouter.post('/sign-up', async (req: Request, res: Response) => {
   const email = req.body.email;
   const password = req.body.password;
   try {
     const userAlreadyExists = await User.findOne({ email: email })
 
     if (userAlreadyExists) {
-      return res.send({ status: 400, error: "Email is already in use, please sign in." })
+      return res.status(400).send("Email is already in use, please sign in.")
     }
     const newUser = new User({
       email: email,
@@ -31,14 +31,14 @@ userRouter.post('/sign-up', async (req, res) => {
 
     const user = await newUser.save()
 
-    res.status(200).json(user)
+    res.status(201).json(user)
   } catch (err) {
     res.status(500).json(err)
   }
 })
 
 // route to sign in
-userRouter.post('/login', async (req, res) => {
+userRouter.post('/login', async (req: Request, res: Response) => {
   const email: string = req.body.email;
   const password: string = req.body.password;
   try {

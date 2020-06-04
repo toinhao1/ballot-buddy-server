@@ -8,7 +8,7 @@ const passport_1 = require("passport");
 const User_1 = __importDefault(require("../models/User"));
 exports.PassportConfig = () => {
     let opts = {
-        secretOrKey: String(process.env.PASSPORT_SECRET),
+        secretOrKey: process.env.PASSPORT_SECRET,
         jwtFromRequest: passport_jwt_1.ExtractJwt.fromAuthHeaderAsBearerToken()
     };
     passport_1.use(new passport_jwt_1.Strategy(opts, (jwt_payload, done) => {

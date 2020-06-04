@@ -24,7 +24,7 @@ userRouter.post('/sign-up', (req, res) => __awaiter(void 0, void 0, void 0, func
     try {
         const userAlreadyExists = yield User_1.default.findOne({ email: email });
         if (userAlreadyExists) {
-            return res.status(400).send("Email is already in use, please sign in.");
+            return res.send({ status: 400, error: "Email is already in use, please sign in." });
         }
         const newUser = new User_1.default({
             email: email,
@@ -36,7 +36,7 @@ userRouter.post('/sign-up', (req, res) => __awaiter(void 0, void 0, void 0, func
         const hashedPassword = yield bcryptjs_1.hash(password, getSalt);
         newUser.password = hashedPassword;
         const user = yield newUser.save();
-        res.status(201).json(user);
+        res.status(200).json(user);
     }
     catch (err) {
         res.status(500).json(err);

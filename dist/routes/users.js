@@ -13,7 +13,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const express_1 = require("express");
-const bcryptjs_1 = require("bcryptjs");
+const bcrypt_1 = require("bcrypt");
 const jsonwebtoken_1 = require("jsonwebtoken");
 const User_1 = __importDefault(require("../models/User"));
 const userRouter = express_1.Router();
@@ -24,19 +24,15 @@ userRouter.post('/sign-up', (req, res) => __awaiter(void 0, void 0, void 0, func
     try {
         const userAlreadyExists = yield User_1.default.findOne({ email: email });
         if (userAlreadyExists) {
-            return res.send({ status: 400, error: "Email is already in use, please sign in." });
+            return res.status(400).send("Email is already in use, please sign in.");
         }
         const newUser = new User_1.default({
             email: email,
             name: req.body.name,
             password: password,
         });
-        // bcrypt hashing the password
-        const getSalt = yield bcryptjs_1.genSalt(10);
-        const hashedPassword = yield bcryptjs_1.hash(password, getSalt);
-        newUser.password = hashedPassword;
         const user = yield newUser.save();
-        res.status(200).json(user);
+        res.status(201).json(user);
     }
     catch (err) {
         res.status(500).json(err);
@@ -51,7 +47,7 @@ userRouter.post('/login', (req, res) => __awaiter(void 0, void 0, void 0, functi
         if (!user) {
             return res.send({ status: 400, error: "Email not found." });
         }
-        const isMatch = yield bcryptjs_1.compare(password, user.password);
+        const isMatch = yield bcrypt_1.compare(password, user.password);
         if (isMatch) {
             let token = jsonwebtoken_1.sign({ id: user.id, email: user.email }, String(process.env.PASSPORT_SECRET), { expiresIn: 36000 });
             res.json({ success: true, token: 'Bearer ' + token, userId: user.id });

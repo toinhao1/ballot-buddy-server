@@ -4,7 +4,7 @@ import User from '../models/User'
 
 export const PassportConfig = () => {
   let opts: StrategyOptions = {
-    secretOrKey: process.env.PASSPORT_SECRET,
+    secretOrKey: String(process.env.PASSPORT_SECRET),
     jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken()
   }
   use(new Strategy(opts, (jwt_payload, done) => {

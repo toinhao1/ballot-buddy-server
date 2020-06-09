@@ -1,5 +1,5 @@
 import { Router, Request, Response } from 'express'
-import { hash, genSalt, compare } from 'bcryptjs'
+import { compare } from 'bcrypt'
 import { sign } from 'jsonwebtoken'
 import { authenticate } from 'passport'
 
@@ -22,13 +22,6 @@ userRouter.post('/sign-up', async (req: Request, res: Response) => {
       name: req.body.name,
       password: password,
     })
-
-    // bcrypt hashing the password
-    const getSalt = await genSalt(10)
-    const hashedPassword = await hash(password, getSalt)
-
-    newUser.password = hashedPassword
-
     const user = await newUser.save()
 
     res.status(201).json(user)

@@ -19,12 +19,12 @@ exports.getFullZipCode = (address) => __awaiter(void 0, void 0, void 0, function
         url: `https://us-street.api.smartystreets.com/street-address?auth-id=${String(process.env.SMARTY_STREETS_AUTH_ID)}&auth-token=${String(process.env.SMARTY_STREETS_AUTH_TOKEN)} `,
         params: {
             street: address.street,
-            street2: address.street2 || '',
+            secondary: address.secondary || '',
             city: address.city,
             state: address.state,
             zipcode: address.zipcode,
             candidates: 10,
         }
     });
-    return response;
+    return response.data[0];
 });

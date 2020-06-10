@@ -8,7 +8,7 @@ const AddressSchema = new mongoose_1.Schema({
         trim: true,
         lowercase: true
     },
-    street2: {
+    secondary: {
         type: String,
         required: true,
         trim: true,
@@ -38,5 +38,9 @@ const AddressSchema = new mongoose_1.Schema({
         trim: true,
         lowercase: true
     },
+    congressionalDistrict: {
+        type: String,
+        required: true
+    }
 }, { timestamps: true });
 exports.default = AddressSchema;

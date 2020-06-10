@@ -2,12 +2,12 @@ import mongoose, { Schema, Document } from 'mongoose';
 
 export interface IAddress extends Document {
   street: string;
-  street2?: string;
+  secondary?: string;
   city: string;
   state: string;
   zipcode: string;
   plus4Zip: string;
-
+  congressionalDistrict: string;
 }
 
 const AddressSchema: Schema<IAddress> = new Schema({
@@ -17,7 +17,7 @@ const AddressSchema: Schema<IAddress> = new Schema({
     trim: true,
     lowercase: true
   },
-  street2: {
+  secondary: {
     type: String,
     required: true,
     trim: true,
@@ -47,6 +47,10 @@ const AddressSchema: Schema<IAddress> = new Schema({
     trim: true,
     lowercase: true
   },
+  congressionalDistrict: {
+    type: String,
+    required: true
+  }
 },
   { timestamps: true }
 )

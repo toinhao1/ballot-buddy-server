@@ -10,14 +10,14 @@ const cors_1 = __importDefault(require("cors"));
 const passport_1 = __importDefault(require("passport"));
 const users_1 = __importDefault(require("./routes/users"));
 const address_1 = __importDefault(require("./routes/address"));
-const passport_2 = require("./config/passport");
 const app = express_1.default();
 //Body parser middleware
 app.use(body_parser_1.default.json());
 app.use(body_parser_1.default.urlencoded({ extended: false }));
 // Initilize passport
 app.use(passport_1.default.initialize());
-passport_2.PassportConfig();
+//Passport Config
+require('./config/passport')(passport_1.default);
 //allows for cross site requests. The basis of an open API.
 app.use(cors_1.default());
 //Logs activity to the console.

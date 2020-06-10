@@ -7,8 +7,6 @@ import passport from 'passport'
 import userRouter from './routes/users'
 import addressRouter from './routes/address'
 
-import { PassportConfig } from './config/passport'
-
 const app: express.Application = express();
 
 //Body parser middleware
@@ -17,7 +15,8 @@ app.use(bodyParser.urlencoded({ extended: false }));
 
 // Initilize passport
 app.use(passport.initialize())
-PassportConfig()
+//Passport Config
+require('./config/passport')(passport);
 
 //allows for cross site requests. The basis of an open API.
 app.use(cors());

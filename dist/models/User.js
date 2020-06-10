@@ -15,13 +15,10 @@ var __importStar = (this && this.__importStar) || function (mod) {
     result["default"] = mod;
     return result;
 };
-var __importDefault = (this && this.__importDefault) || function (mod) {
-    return (mod && mod.__esModule) ? mod : { "default": mod };
-};
 Object.defineProperty(exports, "__esModule", { value: true });
 const mongoose_1 = __importStar(require("mongoose"));
 const bcrypt_1 = require("bcrypt");
-const Address_1 = __importDefault(require("./Address"));
+const Address_1 = require("./Address");
 const UserSchema = new mongoose_1.Schema({
     email: {
         type: String,
@@ -39,7 +36,7 @@ const UserSchema = new mongoose_1.Schema({
         required: true,
         trim: true
     },
-    address: Address_1.default
+    address: Address_1.AddressSchema
 }, { timestamps: true });
 // Hash plain text password before saving
 UserSchema.pre('save', function (next) {

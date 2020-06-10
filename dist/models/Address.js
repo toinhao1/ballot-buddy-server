@@ -1,7 +1,7 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 const mongoose_1 = require("mongoose");
-const AddressSchema = new mongoose_1.Schema({
+exports.AddressSchema = new mongoose_1.Schema({
     street: {
         type: String,
         required: true,
@@ -10,7 +10,7 @@ const AddressSchema = new mongoose_1.Schema({
     },
     secondary: {
         type: String,
-        required: true,
+        required: false,
         trim: true,
         lowercase: true
     },
@@ -32,7 +32,13 @@ const AddressSchema = new mongoose_1.Schema({
         trim: true,
         lowercase: true
     },
-    plus4Zip: {
+    plusFourZip: {
+        type: String,
+        required: true,
+        trim: true,
+        lowercase: true
+    },
+    county: {
         type: String,
         required: true,
         trim: true,
@@ -43,4 +49,4 @@ const AddressSchema = new mongoose_1.Schema({
         required: true
     }
 }, { timestamps: true });
-exports.default = AddressSchema;
+exports.Address = mongoose_1.model("Address", exports.AddressSchema);

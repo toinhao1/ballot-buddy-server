@@ -11,9 +11,9 @@ let opts = {
 };
 module.exports = (passport) => {
     passport.use(new passport_jwt_1.Strategy(opts, (jwt_payload, done) => {
-        User_1.default.findById(jwt_payload.id).then(user => {
-            if (user) {
-                return done(null, user);
+        User_1.default.findById(jwt_payload.id).then(currentUser => {
+            if (currentUser) {
+                return done(null, currentUser);
             }
             else {
                 return done(null, false);

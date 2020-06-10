@@ -1,13 +1,12 @@
 import mongoose, { Schema, Document } from 'mongoose';
 import { hash, genSalt, compare } from 'bcrypt'
-import { sign } from 'jsonwebtoken'
-import Address from './Address'
+import { AddressSchema } from './Address'
 
 export interface IUser extends Document {
   email: string;
   name?: string;
   password: string;
-  address?: mongoose.Schema;
+  address?: any;
 }
 
 const UserSchema: Schema = new Schema({
@@ -27,7 +26,7 @@ const UserSchema: Schema = new Schema({
     required: true,
     trim: true
   },
-  address: Address
+  address: AddressSchema
 },
   { timestamps: true }
 )

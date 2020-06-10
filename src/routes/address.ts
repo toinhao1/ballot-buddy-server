@@ -2,6 +2,8 @@ import { Router, Request, Response } from 'express'
 import passport from 'passport'
 
 import { getFullZipCode } from '../controllers/smarty-streets'
+
+import { Address } from '../models/Address'
 import User from '../models/User'
 
 const addressRouter = Router()
@@ -17,9 +19,7 @@ interface addressInput {
 addressRouter.post('/address', passport.authenticate('jwt', { session: false }), async (req: Request, res: Response) => {
   const { street, city, state, zipcode, secondary } = req.body
   const { _id } = req.user
-  if (!req.user) {
-    res.status(400).send("Please sign in!")
-  }
+
   const address: addressInput = {
     street: street,
     secondary: secondary || '',
@@ -27,14 +27,22 @@ addressRouter.post('/address', passport.authenticate('jwt', { session: false }),
     state: state,
     zipcode: zipcode,
   }
-  console.log(req.user)
   try {
 
-    const currentAddress = await getFullZipCode(address)
-    console.log(currentAddress)
+    const smartyStreetsData = await getFullZipCode(address)
+    const combinedAddress = { ...address, ...smartyStreetsData }
+    console.log(combinedAddress)
+    const currentAddress = new Address(
+      combinedAddress
+    )
 
-    // const userToSave = await User.findOneAndUpdate(_id, { address: { street } })
-    // userToSave.save()
+    const userToSave = await User.findOne({ _id })
+    if (!userToSave) {
+      throw new Error("User not found")
+    }
+    userToSave.address = currentAddress
+    console.log(userToSave)
+    await userToSave.save()
     res.status(200).send("Address has been updated!")
   } catch (err) {
     console.log(err)

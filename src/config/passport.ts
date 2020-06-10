@@ -9,9 +9,9 @@ let opts: StrategyOptions = {
 }
 module.exports = (passport: PassportStatic) => {
   passport.use(new Strategy(opts, (jwt_payload, done) => {
-    User.findById(jwt_payload.id).then(user => {
-      if (user) {
-        return done(null, user)
+    User.findById(jwt_payload.id).then(currentUser => {
+      if (currentUser) {
+        return done(null, currentUser)
       } else {
         return done(null, false)
       }

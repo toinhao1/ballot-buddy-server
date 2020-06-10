@@ -26,5 +26,10 @@ exports.getFullZipCode = (address) => __awaiter(void 0, void 0, void 0, function
             candidates: 10,
         }
     });
-    return response.data[0];
+    const dataToReturn = {
+        plusFourZip: response.data[0].components.plus4_code,
+        county: response.data[0].metadata.county_name,
+        congressionalDistrict: response.data[0].metadata.congressional_district
+    };
+    return dataToReturn;
 });

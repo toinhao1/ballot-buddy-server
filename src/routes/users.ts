@@ -44,10 +44,9 @@ userRouter.post('/login', async (req: Request, res: Response) => {
       let token = sign(
         { id: user.id, email: user.email },
         String(process.env.PASSPORT_SECRET),
-        { expiresIn: 36000 }
+        { expiresIn: 360000 }
       );
-      res.json({ success: true, token: 'Bearer ' + token, userId: user.id })
-
+      res.json({ success: true, token: token, userId: user._id, address: user.address })
     } else {
       return res.send({ status: 400, error: "Incorrect password" })
     }

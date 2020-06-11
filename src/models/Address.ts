@@ -16,43 +16,36 @@ export const AddressSchema: Schema = new Schema({
     type: String,
     required: true,
     trim: true,
-    lowercase: true
   },
   secondary: {
     type: String,
     required: false,
     trim: true,
-    lowercase: true
   },
   city: {
     type: String,
     required: true,
     trim: true,
-    lowercase: true
   },
   state: {
     type: String,
     required: true,
     trim: true,
-    lowercase: true
   },
   zipcode: {
     type: String,
     required: true,
     trim: true,
-    lowercase: true
   },
   plusFourZip: {
     type: String,
     required: true,
     trim: true,
-    lowercase: true
   },
   county: {
     type: String,
     required: true,
     trim: true,
-    lowercase: true
   },
   congressionalDistrict: {
     type: String,

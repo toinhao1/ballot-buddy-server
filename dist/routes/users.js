@@ -49,8 +49,8 @@ userRouter.post('/login', (req, res) => __awaiter(void 0, void 0, void 0, functi
         }
         const isMatch = yield bcrypt_1.compare(password, user.password);
         if (isMatch) {
-            let token = jsonwebtoken_1.sign({ id: user.id, email: user.email }, String(process.env.PASSPORT_SECRET), { expiresIn: 36000 });
-            res.json({ success: true, token: 'Bearer ' + token, userId: user.id });
+            let token = jsonwebtoken_1.sign({ id: user.id, email: user.email }, String(process.env.PASSPORT_SECRET), { expiresIn: 360000 });
+            res.json({ success: true, token: token, userId: user._id, address: user.address });
         }
         else {
             return res.send({ status: 400, error: "Incorrect password" });

@@ -13,12 +13,12 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const express_1 = require("express");
-const passport_1 = __importDefault(require("passport"));
+const passport_1 = require("passport");
 const smarty_streets_1 = require("../controllers/smarty-streets");
 const Address_1 = require("../models/Address");
 const User_1 = __importDefault(require("../models/User"));
 const addressRouter = express_1.Router();
-addressRouter.post('/address', passport_1.default.authenticate('jwt', { session: false }), (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+addressRouter.post('/set-address', passport_1.authenticate('jwt', { session: false }), (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const { street, city, state, zipcode, secondary } = req.body;
     const { _id } = req.user;
     const address = {
@@ -29,21 +29,23 @@ addressRouter.post('/address', passport_1.default.authenticate('jwt', { session:
         zipcode: zipcode,
     };
     try {
+        // make request to get full address
         const smartyStreetsData = yield smarty_streets_1.getFullZipCode(address);
+        // combine user provided data with data from smartysteets
         const combinedAddress = Object.assign(Object.assign({}, address), smartyStreetsData);
-        console.log(combinedAddress);
+        // create the new address
         const currentAddress = new Address_1.Address(combinedAddress);
         const userToSave = yield User_1.default.findOne({ _id });
         if (!userToSave) {
             throw new Error("User not found");
         }
+        // set address to user and save.
         userToSave.address = currentAddress;
-        console.log(userToSave);
-        yield userToSave.save();
-        res.status(200).send("Address has been updated!");
+        const user = yield userToSave.save();
+        res.status(200).send({ message: "Address has been updated!", user });
     }
     catch (err) {
-        console.log(err);
+        res.status(400).send('There was an error please try again later.');
     }
 }));
 exports.default = addressRouter;

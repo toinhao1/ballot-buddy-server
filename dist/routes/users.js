@@ -81,4 +81,18 @@ userRouter.put("/update", passport_1.authenticate('jwt', { session: false }), (r
         res.status(400).send("Please sign in to update your email");
     }
 }));
+userRouter.get("/user-profile", passport_1.authenticate('jwt', { session: false }), (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    if (req.user) {
+        try {
+            const user = yield User_1.default.findOne({ _id: req.user._id });
+            res.send({ message: "Here is your profile", user });
+        }
+        catch (err) {
+            res.send(err);
+        }
+    }
+    else {
+        res.send("Please login!");
+    }
+}));
 exports.default = userRouter;

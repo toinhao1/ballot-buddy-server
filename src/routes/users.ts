@@ -79,4 +79,17 @@ userRouter.put("/update", authenticate('jwt', { session: false }), async (req: R
   }
 })
 
+userRouter.get("/user-profile", authenticate('jwt', { session: false }), async (req: Request, res: Response) => {
+  if (req.user) {
+    try {
+      const user = await User.findOne({ _id: req.user._id })
+      res.send({ message: "Here is your profile", user })
+    } catch (err) {
+      res.send(err)
+    }
+  } else {
+    res.send("Please login!")
+  }
+})
+
 export default userRouter;

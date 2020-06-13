@@ -16,7 +16,7 @@ interface addressInput {
 }
 
 addressRouter.post('/set-address', authenticate('jwt', { session: false }), async (req: Request, res: Response) => {
-  const { street, city, state, zipcode, secondary } = req.body
+  const { street, city, state, zipCode, secondary } = req.body
   const { _id } = req.user
 
   const address: addressInput = {
@@ -24,7 +24,7 @@ addressRouter.post('/set-address', authenticate('jwt', { session: false }), asyn
     secondary: secondary || '',
     city: city,
     state: state,
-    zipcode: zipcode,
+    zipcode: zipCode,
   }
   try {
     // make request to get full address

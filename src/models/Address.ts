@@ -45,7 +45,6 @@ export const AddressSchema: Schema = new Schema({
   county: {
     type: String,
     required: true,
-    trim: true,
   },
   congressionalDistrict: {
     type: String,

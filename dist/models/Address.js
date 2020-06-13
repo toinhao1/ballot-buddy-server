@@ -35,7 +35,6 @@ exports.AddressSchema = new mongoose_1.Schema({
     county: {
         type: String,
         required: true,
-        trim: true,
     },
     congressionalDistrict: {
         type: String,

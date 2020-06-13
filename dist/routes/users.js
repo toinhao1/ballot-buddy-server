@@ -85,10 +85,10 @@ userRouter.get("/user-profile", passport_1.authenticate('jwt', { session: false 
     if (req.user) {
         try {
             const user = yield User_1.default.findOne({ _id: req.user._id });
-            res.send({ message: "Here is your profile", user });
+            res.status(200).send({ message: "Here is your profile", user });
         }
         catch (err) {
-            res.send(err);
+            res.status(400).send(err);
         }
     }
     else {

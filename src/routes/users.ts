@@ -83,9 +83,9 @@ userRouter.get("/user-profile", authenticate('jwt', { session: false }), async (
   if (req.user) {
     try {
       const user = await User.findOne({ _id: req.user._id })
-      res.send({ message: "Here is your profile", user })
+      res.status(200).send({ message: "Here is your profile", user })
     } catch (err) {
-      res.send(err)
+      res.status(400).send(err)
     }
   } else {
     res.send("Please login!")

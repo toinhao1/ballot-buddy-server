@@ -19,14 +19,14 @@ const Address_1 = require("../models/Address");
 const User_1 = __importDefault(require("../models/User"));
 const addressRouter = express_1.Router();
 addressRouter.post('/set-address', passport_1.authenticate('jwt', { session: false }), (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    const { street, city, state, zipcode, secondary } = req.body;
+    const { street, city, state, zipCode, secondary } = req.body;
     const { _id } = req.user;
     const address = {
         street: street,
         secondary: secondary || '',
         city: city,
         state: state,
-        zipcode: zipcode,
+        zipcode: zipCode,
     };
     try {
         // make request to get full address

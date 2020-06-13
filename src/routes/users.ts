@@ -3,7 +3,7 @@ import { compare } from 'bcrypt'
 import { sign } from 'jsonwebtoken'
 import { authenticate } from 'passport'
 
-import User from '../models/User'
+import User, { IUser } from '../models/User'
 
 const userRouter = Router()
 
@@ -44,7 +44,7 @@ userRouter.post('/login', async (req: Request, res: Response) => {
       let token = sign(
         { id: user.id, email: user.email },
         String(process.env.PASSPORT_SECRET),
-        { expiresIn: 360000 }
+        { expiresIn: "7d" }
       );
       res.json({ success: true, token: token, userId: user._id, address: user.address })
     } else {
@@ -56,4 +56,27 @@ userRouter.post('/login', async (req: Request, res: Response) => {
   }
 })
 
-export default userRouter
+// update the user email
+userRouter.put("/update", authenticate('jwt', { session: false }), async (req: Request, res: Response) => {
+  if (req.user) {
+    const updates = {
+      email: req.body.email
+    }
+    try {
+      let updatedUser: IUser | null = await User.findOneAndUpdate(
+        { _id: req.user._id },
+        { $set: updates },
+        { new: true }
+      )
+      await updatedUser?.save()
+      res.json(updatedUser)
+
+    } catch (err) {
+      res.send(err)
+    }
+  } else {
+    res.status(400).send("Please sign in to update your email");
+  }
+})
+
+export default userRouter;

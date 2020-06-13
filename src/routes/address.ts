@@ -1,8 +1,7 @@
 import { Router, Request, Response } from 'express'
-import passport from 'passport'
+import { authenticate } from 'passport'
 
 import { getFullZipCode } from '../controllers/smarty-streets'
-
 import { Address } from '../models/Address'
 import User from '../models/User'
 
@@ -16,7 +15,7 @@ interface addressInput {
   zipcode: string;
 }
 
-addressRouter.post('/address', passport.authenticate('jwt', { session: false }), async (req: Request, res: Response) => {
+addressRouter.post('/set-address', authenticate('jwt', { session: false }), async (req: Request, res: Response) => {
   const { street, city, state, zipcode, secondary } = req.body
   const { _id } = req.user
 
@@ -28,10 +27,11 @@ addressRouter.post('/address', passport.authenticate('jwt', { session: false }),
     zipcode: zipcode,
   }
   try {
-
+    // make request to get full address
     const smartyStreetsData = await getFullZipCode(address)
+    // combine user provided data with data from smartysteets
     const combinedAddress = { ...address, ...smartyStreetsData }
-    console.log(combinedAddress)
+    // create the new address
     const currentAddress = new Address(
       combinedAddress
     )
@@ -40,12 +40,12 @@ addressRouter.post('/address', passport.authenticate('jwt', { session: false }),
     if (!userToSave) {
       throw new Error("User not found")
     }
+    // set address to user and save.
     userToSave.address = currentAddress
-    console.log(userToSave)
-    await userToSave.save()
-    res.status(200).send("Address has been updated!")
+    const user = await userToSave.save()
+    res.status(200).send({ message: "Address has been updated!", user })
   } catch (err) {
-    console.log(err)
+    res.status(400).send('There was an error please try again later.')
   }
 })
 

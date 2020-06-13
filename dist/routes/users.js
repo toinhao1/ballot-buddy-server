@@ -15,6 +15,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const express_1 = require("express");
 const bcrypt_1 = require("bcrypt");
 const jsonwebtoken_1 = require("jsonwebtoken");
+const passport_1 = require("passport");
 const User_1 = __importDefault(require("../models/User"));
 const userRouter = express_1.Router();
 // route to SignUp a new user
@@ -49,7 +50,7 @@ userRouter.post('/login', (req, res) => __awaiter(void 0, void 0, void 0, functi
         }
         const isMatch = yield bcrypt_1.compare(password, user.password);
         if (isMatch) {
-            let token = jsonwebtoken_1.sign({ id: user.id, email: user.email }, String(process.env.PASSPORT_SECRET), { expiresIn: 360000 });
+            let token = jsonwebtoken_1.sign({ id: user.id, email: user.email }, String(process.env.PASSPORT_SECRET), { expiresIn: "7d" });
             res.json({ success: true, token: token, userId: user._id, address: user.address });
         }
         else {
@@ -58,6 +59,26 @@ userRouter.post('/login', (req, res) => __awaiter(void 0, void 0, void 0, functi
     }
     catch (err) {
         res.status(500).json(err);
+    }
+}));
+// update the user email
+userRouter.put("/update", passport_1.authenticate('jwt', { session: false }), (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    var _a;
+    if (req.user) {
+        const updates = {
+            email: req.body.email
+        };
+        try {
+            let updatedUser = yield User_1.default.findOneAndUpdate({ _id: req.user._id }, { $set: updates }, { new: true });
+            yield ((_a = updatedUser) === null || _a === void 0 ? void 0 : _a.save());
+            res.json(updatedUser);
+        }
+        catch (err) {
+            res.send(err);
+        }
+    }
+    else {
+        res.status(400).send("Please sign in to update your email");
     }
 }));
 exports.default = userRouter;

@@ -92,4 +92,17 @@ userRouter.get("/user-profile", authenticate('jwt', { session: false }), async (
   }
 })
 
+userRouter.put('/edit-user', authenticate('jwt', { session: false }), async (req: Request, res: Response) => {
+  if (req.user) {
+    try {
+      const user = await User.findOneAndUpdate({ _id: req.user._id }, { $set: req.body.email }, { new: true })
+      res.status(200).send({ message: "Here is your profile", user })
+    } catch (err) {
+      res.status(400).send(err)
+    }
+  } else {
+    res.send("Please login!")
+  }
+})
+
 export default userRouter;

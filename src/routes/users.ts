@@ -94,9 +94,12 @@ userRouter.get("/user-profile", authenticate('jwt', { session: false }), async (
 
 userRouter.put('/edit-user', authenticate('jwt', { session: false }), async (req: Request, res: Response) => {
   if (req.user) {
+    const updates = {
+      email: req.body.email
+    }
     try {
-      const user = await User.findOneAndUpdate({ _id: req.user._id }, { $set: req.body.email }, { new: true })
-      res.status(200).send({ message: "Here is your profile", user })
+      const user: IUser | null = await User.findOneAndUpdate({ _id: req.user._id }, { $set: updates }, { new: true })
+      res.status(200).send({ message: "Your profile has been updated.", user })
     } catch (err) {
       res.status(400).send(err)
     }

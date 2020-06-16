@@ -97,9 +97,12 @@ userRouter.get("/user-profile", passport_1.authenticate('jwt', { session: false 
 }));
 userRouter.put('/edit-user', passport_1.authenticate('jwt', { session: false }), (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     if (req.user) {
+        const updates = {
+            email: req.body.email
+        };
         try {
-            const user = yield User_1.default.findOneAndUpdate({ _id: req.user._id }, { $set: req.body.email }, { new: true });
-            res.status(200).send({ message: "Here is your profile", user });
+            const user = yield User_1.default.findOneAndUpdate({ _id: req.user._id }, { $set: updates }, { new: true });
+            res.status(200).send({ message: "Your profile has been updated.", user });
         }
         catch (err) {
             res.status(400).send(err);

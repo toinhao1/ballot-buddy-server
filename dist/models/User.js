@@ -49,7 +49,7 @@ UserSchema.pre('save', function (next) {
         next();
     });
 });
-// Generqting auth token for user login.
+// Generating auth token for user login.
 // UserSchema.methods.generateAuthToken = function () {
 //   const user = this as IUser;
 //   const token = sign({ id: user.id, email: user.email }, String(process.env.JWT_SECRET), { expiresIn: 36000 });

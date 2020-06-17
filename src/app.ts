@@ -6,6 +6,7 @@ import passport from 'passport'
 
 import userRouter from './routes/users'
 import addressRouter from './routes/address'
+import representativeRouter from './routes/representatives'
 
 const app: express.Application = express();
 
@@ -26,5 +27,6 @@ app.use(logger('combined'));
 // routes for all user based functionality
 app.use(addressRouter)
 app.use(userRouter)
+app.use(representativeRouter)
 
 export default app;

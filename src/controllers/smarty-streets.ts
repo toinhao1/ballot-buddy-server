@@ -1,4 +1,4 @@
-import axios, { AxiosPromise } from 'axios'
+import axios from 'axios'
 
 export const getFullZipCode = async (address: any): Promise<any> => {
   const response = await axios({

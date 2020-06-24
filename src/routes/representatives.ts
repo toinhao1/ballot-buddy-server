@@ -23,7 +23,7 @@ representativeRouter.get('/current-representatives', authenticate('jwt', { sessi
   }
 })
 
-representativeRouter.get('/current-representative/office-data', authenticate('jwt', { session: false }), async (req: Request, res: Response) => {
+representativeRouter.post('/current-representative/office-data', authenticate('jwt', { session: false }), async (req: Request, res: Response) => {
   if (req.user) {
     // get specific rep office address, phone number, and website.
     const data = await getRepOfficeData(req.body.candidateId)

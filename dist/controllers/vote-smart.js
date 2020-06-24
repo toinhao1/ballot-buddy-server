@@ -19,9 +19,10 @@ exports.getCurrentRepresentatives = (zip5, zip4) => __awaiter(void 0, void 0, vo
     return currentReps;
 });
 exports.getRepOfficeData = (candidateId) => __awaiter(void 0, void 0, void 0, function* () {
+    var _a;
     const firstRes = yield axios_1.default.get(`http://api.votesmart.org/Address.getOffice?key=${String(process.env.VOTE_SMART_API_KEY)}&o=JSON&candidateId=${candidateId}`);
     const secondRes = yield axios_1.default.get(`http://api.votesmart.org/Address.getOfficeWebAddress?key=${String(process.env.VOTE_SMART_API_KEY)}&o=JSON&candidateId=${candidateId}`);
-    const firstExtractedData = firstRes.data.address.office;
+    const firstExtractedData = (_a = firstRes.data.address) === null || _a === void 0 ? void 0 : _a.office;
     const secondExtractedData = secondRes.data;
     return Object.assign(Object.assign({}, firstExtractedData), secondExtractedData);
 });

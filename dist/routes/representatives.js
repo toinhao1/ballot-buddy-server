@@ -32,7 +32,7 @@ representativeRouter.get('/current-representatives', passport_1.authenticate('jw
         res.send("Fuck off");
     }
 }));
-representativeRouter.get('/current-representative/office-data', passport_1.authenticate('jwt', { session: false }), (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+representativeRouter.post('/current-representative/office-data', passport_1.authenticate('jwt', { session: false }), (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     if (req.user) {
         // get specific rep office address, phone number, and website.
         const data = yield vote_smart_1.getRepOfficeData(req.body.candidateId);

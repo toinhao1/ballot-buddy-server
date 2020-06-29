@@ -19,3 +19,17 @@ export const getRepOfficeData = async (candidateId: string): Promise<any> => {
 
   return { ...firstExtractedData, ...secondExtractedData };
 }
+
+export const getRepDetailedBio = async (candidateId: string): Promise<any> => {
+
+  const response = await axios.get(`http://api.votesmart.org/CandidateBio.getDetailedBio?key=${String(process.env.VOTE_SMART_API_KEY)}&o=JSON&candidateId=${candidateId}`)
+
+  const extractedData = {
+    professional: response.data.bio.candidate.profession,
+    political: response.data.bio.candidate.political,
+    organizations: response.data.bio.candidate.orgMembership,
+    congressionalOrgs: response.data.bio.candidate.congMembership,
+  }
+
+  return extractedData
+}

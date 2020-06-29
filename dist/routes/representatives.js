@@ -29,17 +29,18 @@ representativeRouter.get('/current-representatives', passport_1.authenticate('jw
         res.status(200).send({ message: "Here are your reps!", data });
     }
     else {
-        res.send("Fuck off");
+        res.send("You must sign in to request this.");
     }
 }));
 representativeRouter.post('/current-representative/office-data', passport_1.authenticate('jwt', { session: false }), (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     if (req.user) {
         // get specific rep office address, phone number, and website.
         const data = yield vote_smart_1.getRepOfficeData(req.body.candidateId);
-        res.status(200).send({ message: "Here are your reps!", data });
+        const additionalData = yield vote_smart_1.getRepDetailedBio(req.body.candidateId);
+        res.status(200).send({ message: "Here is your reps contact info!", data, additionalData });
     }
     else {
-        res.send("Fuck off");
+        res.send("You must sign in to request this.");
     }
 }));
 exports.default = representativeRouter;

@@ -1,7 +1,7 @@
 import { Router, Request, Response } from 'express'
 import { authenticate } from 'passport'
 
-import { getCurrentRepresentatives, getRepOfficeData } from '../controllers/vote-smart'
+import { getCurrentRepresentatives, getRepOfficeData, getRepDetailedBio } from '../controllers/vote-smart'
 import User from '../models/User'
 
 
@@ -19,7 +19,7 @@ representativeRouter.get('/current-representatives', authenticate('jwt', { sessi
     res.status(200).send({ message: "Here are your reps!", data })
 
   } else {
-    res.send("Fuck off")
+    res.send("You must sign in to request this.")
   }
 })
 
@@ -27,13 +27,13 @@ representativeRouter.post('/current-representative/office-data', authenticate('j
   if (req.user) {
     // get specific rep office address, phone number, and website.
     const data = await getRepOfficeData(req.body.candidateId)
+    const additionalData = await getRepDetailedBio(req.body.candidateId)
 
-    res.status(200).send({ message: "Here are your reps!", data })
+    res.status(200).send({ message: "Here is your reps contact info!", data, additionalData })
 
   } else {
-    res.send("Fuck off")
+    res.send("You must sign in to request this.")
   }
 })
-
 
 export default representativeRouter;

@@ -22,7 +22,7 @@ exports.getRepOfficeData = (candidateId) => __awaiter(void 0, void 0, void 0, fu
     var _a;
     const firstRes = yield axios_1.default.get(`http://api.votesmart.org/Address.getOffice?key=${String(process.env.VOTE_SMART_API_KEY)}&o=JSON&candidateId=${candidateId}`);
     const secondRes = yield axios_1.default.get(`http://api.votesmart.org/Address.getOfficeWebAddress?key=${String(process.env.VOTE_SMART_API_KEY)}&o=JSON&candidateId=${candidateId}`);
-    const firstExtractedData = (_a = firstRes.data.address) === null || _a === void 0 ? void 0 : _a.office;
+    const firstExtractedData = (_a = firstRes.data.address) === null || _a === void 0 ? void 0 : _a.office[0];
     const secondExtractedData = secondRes.data;
     return Object.assign(Object.assign({}, firstExtractedData), secondExtractedData);
 });
@@ -31,8 +31,6 @@ exports.getRepDetailedBio = (candidateId) => __awaiter(void 0, void 0, void 0, f
     const extractedData = {
         professional: response.data.bio.candidate.profession,
         political: response.data.bio.candidate.political,
-        organizations: response.data.bio.candidate.orgMembership,
-        congressionalOrgs: response.data.bio.candidate.congMembership,
     };
     return extractedData;
 });

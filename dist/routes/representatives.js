@@ -15,6 +15,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const express_1 = require("express");
 const passport_1 = require("passport");
 const vote_smart_1 = require("../controllers/vote-smart");
+const news_api_1 = require("../controllers/news-api");
 const User_1 = __importDefault(require("../models/User"));
 const representativeRouter = express_1.Router();
 representativeRouter.get('/current-representatives', passport_1.authenticate('jwt', { session: false }), (req, res) => __awaiter(void 0, void 0, void 0, function* () {
@@ -36,8 +37,9 @@ representativeRouter.post('/current-representative/office-data', passport_1.auth
     if (req.user) {
         // get specific rep office address, phone number, and website.
         const data = yield vote_smart_1.getRepOfficeData(req.body.candidateId);
-        const additionalData = yield vote_smart_1.getRepDetailedBio(req.body.candidateId);
-        res.status(200).send({ message: "Here is your reps contact info!", data, additionalData });
+        // const additionalData = await getRepDetailedBio(req.body.candidateId)
+        const newsArticles = yield news_api_1.getNewsForRepresentative((data.webaddress.candidate.nickName || data.webaddress.candidate.firstName), data.webaddress.candidate.lastName);
+        res.status(200).send({ message: "Here is your reps contact info!", newsArticles });
     }
     else {
         res.send("You must sign in to request this.");

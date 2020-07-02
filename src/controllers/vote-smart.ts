@@ -44,5 +44,17 @@ export const getRepsForBallot = async (zip5: string, zip4: string): Promise<any>
 
   const currentReps = response.data.results.filter((rep: any) => rep.electioncandidatestatus === "Running" || rep.electioncandidatestatus === "Announced");
 
-  return currentReps;
+  let ballotObject: any = {}
+
+  currentReps.forEach((rep: any) => {
+    let repArray: Array<object> = []
+    if (ballotObject.hasOwnProperty(rep.office)) {
+      ballotObject[rep.office].push(rep)
+    } else {
+      repArray.push(rep)
+      ballotObject[rep.office] = repArray
+    }
+  })
+
+  return ballotObject;
 }

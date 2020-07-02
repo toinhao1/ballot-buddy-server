@@ -45,4 +45,19 @@ representativeRouter.post('/current-representative/office-data', passport_1.auth
         res.send("You must sign in to request this.");
     }
 }));
+representativeRouter.get('/current-representatives/ballot', passport_1.authenticate('jwt', { session: false }), (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    var _b;
+    if (req.user) {
+        // get the user
+        const user = yield User_1.default.findById(req.user.id);
+        // extract zipcode
+        const { zipcode, plusFourZip } = (_b = user) === null || _b === void 0 ? void 0 : _b.address;
+        // get the current reps from votesmart
+        const data = yield vote_smart_1.getRepsForBallot(zipcode, plusFourZip);
+        res.status(200).send({ message: "Here are your reps!", data });
+    }
+    else {
+        res.send("You must sign in to request this.");
+    }
+}));
 exports.default = representativeRouter;

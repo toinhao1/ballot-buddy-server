@@ -38,3 +38,23 @@ export const getRepDetailedBio = async (candidateId: string): Promise<any> => {
 
   return extractedData
 }
+
+export const getRepsForBallot = async (zip5: string, zip4: string): Promise<any> => {
+  const response = await axios.get(`https://votesmart.org/x/search?s=${zip5}${zip4}`)
+
+  const currentReps = response.data.results.filter((rep: any) => rep.electioncandidatestatus === "Running" || rep.electioncandidatestatus === "Announced");
+
+  let ballotObject: any = {}
+
+  currentReps.forEach((rep: any) => {
+    let repArray: Array<object> = []
+    if (ballotObject.hasOwnProperty(rep.office)) {
+      ballotObject[rep.office].push(rep)
+    } else {
+      repArray.push(rep)
+      ballotObject[rep.office] = repArray
+    }
+  })
+
+  return ballotObject;
+}

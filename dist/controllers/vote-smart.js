@@ -42,3 +42,19 @@ exports.getRepDetailedBio = (candidateId) => __awaiter(void 0, void 0, void 0, f
     };
     return extractedData;
 });
+exports.getRepsForBallot = (zip5, zip4) => __awaiter(void 0, void 0, void 0, function* () {
+    const response = yield axios_1.default.get(`https://votesmart.org/x/search?s=${zip5}${zip4}`);
+    const currentReps = response.data.results.filter((rep) => rep.electioncandidatestatus === "Running" || rep.electioncandidatestatus === "Announced");
+    let ballotObject = {};
+    currentReps.forEach((rep) => {
+        let repArray = [];
+        if (ballotObject.hasOwnProperty(rep.office)) {
+            ballotObject[rep.office].push(rep);
+        }
+        else {
+            repArray.push(rep);
+            ballotObject[rep.office] = repArray;
+        }
+    });
+    return ballotObject;
+});

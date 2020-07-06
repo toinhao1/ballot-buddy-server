@@ -15,6 +15,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const express_1 = require("express");
 const passport_1 = require("passport");
 const vote_smart_1 = require("../controllers/vote-smart");
+const news_api_1 = require("../controllers/news-api");
 const User_1 = __importDefault(require("../models/User"));
 const representativeRouter = express_1.Router();
 representativeRouter.get('/current-representatives', passport_1.authenticate('jwt', { session: false }), (req, res) => __awaiter(void 0, void 0, void 0, function* () {
@@ -35,11 +36,18 @@ representativeRouter.get('/current-representatives', passport_1.authenticate('jw
 representativeRouter.post('/current-representative/office-data', passport_1.authenticate('jwt', { session: false }), (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     if (req.user) {
         try {
-            // get specific rep office address, phone number, and website.
-            const addressData = yield vote_smart_1.getRepOfficeData(req.body.candidateId);
-            const additionalData = yield vote_smart_1.getRepDetailedBio(req.body.candidateId);
-            // const newsArticles = await getNewsForRepresentative((addressData.webaddress.candidate.nickName || addressData.webaddress.candidate.firstName), addressData.webaddress.candidate.lastName)
-            res.status(200).send({ message: "Here is your reps contact info!", addressData, additionalData });
+            let addressData;
+            const { candidateId, name, isForBallot, office } = req.body;
+            if (!isForBallot) {
+                // get specific rep office address, phone number, and website.
+                addressData = yield vote_smart_1.getRepOfficeData(candidateId);
+            }
+            else {
+                addressData = yield vote_smart_1.getCandidateOfficeData(candidateId);
+            }
+            const additionalData = yield vote_smart_1.getRepDetailedBio(candidateId);
+            const newsArticles = yield news_api_1.getNewsForRepresentative(name, office);
+            res.status(200).send({ message: "Here is your reps contact info!", addressData, additionalData, newsArticles });
         }
         catch (err) {
             res.status(400).send({ message: "There was an error!", err });

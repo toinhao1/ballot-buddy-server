@@ -13,7 +13,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const axios_1 = __importDefault(require("axios"));
-exports.getNewsForRepresentative = (firstName, lastName) => __awaiter(void 0, void 0, void 0, function* () {
-    const response = yield axios_1.default.get(`https://gnews.io/api/v3/search?q=${firstName}+${lastName}&lang=en&token=${String(process.env.GNEWS_API_KEY)}`);
+exports.getNewsForRepresentative = (name, office) => __awaiter(void 0, void 0, void 0, function* () {
+    const response = yield axios_1.default.get(`https://gnews.io/api/v3/search?q=${name}+${office}&lang=en&token=${String(process.env.GNEWS_API_KEY)}`);
     return response.data;
 });

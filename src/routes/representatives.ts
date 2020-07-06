@@ -1,7 +1,7 @@
 import { Router, Request, Response } from 'express'
 import { authenticate } from 'passport'
 
-import { getCurrentRepresentatives, getRepOfficeData, getRepDetailedBio, getRepsForBallot } from '../controllers/vote-smart'
+import { getCurrentRepresentatives, getRepOfficeData, getRepDetailedBio, getRepsForBallot, getCandidateOfficeData } from '../controllers/vote-smart'
 import { getNewsForRepresentative } from '../controllers/news-api'
 import User from '../models/User'
 
@@ -27,12 +27,18 @@ representativeRouter.get('/current-representatives', authenticate('jwt', { sessi
 representativeRouter.post('/current-representative/office-data', authenticate('jwt', { session: false }), async (req: Request, res: Response) => {
   if (req.user) {
     try {
-      // get specific rep office address, phone number, and website.
-      const addressData = await getRepOfficeData(req.body.candidateId)
-      const additionalData = await getRepDetailedBio(req.body.candidateId)
-      // const newsArticles = await getNewsForRepresentative((addressData.webaddress.candidate.nickName || addressData.webaddress.candidate.firstName), addressData.webaddress.candidate.lastName)
+      let addressData;
+      const { candidateId, name, isForBallot, office } = req.body
+      if (!isForBallot) {
+        // get specific rep office address, phone number, and website.
+        addressData = await getRepOfficeData(candidateId)
+      } else {
+        addressData = await getCandidateOfficeData(candidateId)
+      }
+      const additionalData = await getRepDetailedBio(candidateId)
+      const newsArticles = await getNewsForRepresentative(name, office)
 
-      res.status(200).send({ message: "Here is your reps contact info!", addressData, additionalData })
+      res.status(200).send({ message: "Here is your reps contact info!", addressData, additionalData, newsArticles })
     } catch (err) {
       res.status(400).send({ message: "There was an error!", err })
     }

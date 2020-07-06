@@ -37,16 +37,17 @@ representativeRouter.post('/current-representative/office-data', passport_1.auth
     if (req.user) {
         try {
             let addressData;
-            const { candidateId, name, isForBallot, office } = req.body;
+            const { isForBallot, data } = req.body;
             if (!isForBallot) {
                 // get specific rep office address, phone number, and website.
-                addressData = yield vote_smart_1.getRepOfficeData(candidateId);
+                addressData = yield vote_smart_1.getRepOfficeData(data.candidate_id);
             }
             else {
-                addressData = yield vote_smart_1.getCandidateOfficeData(candidateId);
+                addressData = yield vote_smart_1.getCandidateOfficeData(data.candidate_id);
             }
-            const additionalData = yield vote_smart_1.getRepDetailedBio(candidateId);
-            const newsArticles = yield news_api_1.getNewsForRepresentative(name, office);
+            const additionalData = yield vote_smart_1.getRepDetailedBio(data.candidate_id);
+            const { candidate } = addressData.webaddress;
+            const newsArticles = yield news_api_1.getNewsForRepresentative(candidate.nickName || candidate.firstName, candidate.lastName, data.office);
             res.status(200).send({ message: "Here is your reps contact info!", addressData, additionalData, newsArticles });
         }
         catch (err) {

@@ -56,6 +56,10 @@ exports.getCandidateOfficeData = (candidateId) => __awaiter(void 0, void 0, void
     else {
         firstExtractedData = firstRes.data.address;
     }
+    // let correctWebAddress: any = {}
+    // if (!Array.isArray(secondRes.data.webaddress.address)) {
+    //   correctWebAddress["webaddress"]["address"] = [secondRes.data.webaddress.address]
+    // }
     const secondExtractedData = secondRes.data;
     return Object.assign(Object.assign({}, firstExtractedData), secondExtractedData);
 });

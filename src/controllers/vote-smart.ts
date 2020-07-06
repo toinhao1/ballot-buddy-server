@@ -52,7 +52,11 @@ export const getCandidateOfficeData = async (candidateId: string): Promise<any> 
   } else {
     firstExtractedData = firstRes.data.address
   }
-  const secondExtractedData = secondRes.data;
+  // let correctWebAddress: any = {}
+  // if (!Array.isArray(secondRes.data.webaddress.address)) {
+  //   correctWebAddress["webaddress"]["address"] = [secondRes.data.webaddress.address]
+  // }
+  const secondExtractedData = secondRes.data
 
   return { ...firstExtractedData, ...secondExtractedData }
 }

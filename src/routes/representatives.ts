@@ -28,15 +28,18 @@ representativeRouter.post('/current-representative/office-data', authenticate('j
   if (req.user) {
     try {
       let addressData;
-      const { candidateId, name, isForBallot, office } = req.body
+      const { isForBallot, data } = req.body
+
       if (!isForBallot) {
         // get specific rep office address, phone number, and website.
-        addressData = await getRepOfficeData(candidateId)
+        addressData = await getRepOfficeData(data.candidate_id)
       } else {
-        addressData = await getCandidateOfficeData(candidateId)
+        addressData = await getCandidateOfficeData(data.candidate_id)
       }
-      const additionalData = await getRepDetailedBio(candidateId)
-      const newsArticles = await getNewsForRepresentative(name, office)
+      const additionalData = await getRepDetailedBio(data.candidate_id)
+
+      const { candidate } = addressData.webaddress
+      const newsArticles = await getNewsForRepresentative(candidate.nickName || candidate.firstName, candidate.lastName, data.office)
 
       res.status(200).send({ message: "Here is your reps contact info!", addressData, additionalData, newsArticles })
     } catch (err) {

@@ -26,13 +26,16 @@ representativeRouter.get('/current-representatives', authenticate('jwt', { sessi
 
 representativeRouter.post('/current-representative/office-data', authenticate('jwt', { session: false }), async (req: Request, res: Response) => {
   if (req.user) {
-    // get specific rep office address, phone number, and website.
-    const addressData = await getRepOfficeData(req.body.candidateId)
-    const additionalData = await getRepDetailedBio(req.body.candidateId)
-    const newsArticles = await getNewsForRepresentative((addressData.webaddress.candidate.nickName || addressData.webaddress.candidate.firstName), addressData.webaddress.candidate.lastName)
+    try {
+      // get specific rep office address, phone number, and website.
+      const addressData = await getRepOfficeData(req.body.candidateId)
+      const additionalData = await getRepDetailedBio(req.body.candidateId)
+      // const newsArticles = await getNewsForRepresentative((addressData.webaddress.candidate.nickName || addressData.webaddress.candidate.firstName), addressData.webaddress.candidate.lastName)
 
-    res.status(200).send({ message: "Here is your reps contact info!", addressData, additionalData, newsArticles })
-
+      res.status(200).send({ message: "Here is your reps contact info!", addressData, additionalData })
+    } catch (err) {
+      res.status(400).send({ message: "There was an error!", err })
+    }
   } else {
     res.send("You must sign in to request this.")
   }
@@ -40,14 +43,18 @@ representativeRouter.post('/current-representative/office-data', authenticate('j
 
 representativeRouter.get('/current-representatives/ballot', authenticate('jwt', { session: false }), async (req: Request, res: Response) => {
   if (req.user) {
-    // get the user
-    const user = await User.findById(req.user.id)
-    // extract zipcode
-    const { zipcode, plusFourZip } = user?.address
-    // get the current reps from votesmart
-    const data = await getRepsForBallot(zipcode, plusFourZip)
+    try {
+      // get the user
+      const user = await User.findById(req.user.id)
+      // extract zipcode
+      const { zipcode, plusFourZip } = user?.address
+      // get the current reps from votesmart
+      const data = await getRepsForBallot(zipcode, plusFourZip)
+      res.status(200).send({ message: "Here are your reps!", data })
 
-    res.status(200).send({ message: "Here are your reps!", data })
+    } catch (err) {
+      res.status(400).send({ message: "There was an error!" })
+    }
 
   } else {
     res.send("You must sign in to request this.")

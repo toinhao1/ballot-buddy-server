@@ -35,10 +35,11 @@ exports.getRepOfficeData = (candidateId) => __awaiter(void 0, void 0, void 0, fu
     return Object.assign(Object.assign({}, firstExtractedData), secondExtractedData);
 });
 exports.getRepDetailedBio = (candidateId) => __awaiter(void 0, void 0, void 0, function* () {
+    var _a, _b;
     const response = yield axios_1.default.get(`http://api.votesmart.org/CandidateBio.getDetailedBio?key=${String(process.env.VOTE_SMART_API_KEY)}&o=JSON&candidateId=${candidateId}`);
     const extractedData = {
-        professional: response.data.bio.candidate.profession,
-        political: response.data.bio.candidate.political,
+        professional: (_a = response.data.bio) === null || _a === void 0 ? void 0 : _a.candidate.profession,
+        political: (_b = response.data.bio) === null || _b === void 0 ? void 0 : _b.candidate.political,
     };
     return extractedData;
 });

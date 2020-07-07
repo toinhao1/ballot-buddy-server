@@ -38,7 +38,7 @@ representativeRouter.post('/current-representative/office-data', authenticate('j
       }
       const additionalData = await getRepDetailedBio(data.candidate_id)
 
-      const { candidate } = addressData.webaddress
+      const { candidate } = addressData.webaddress ? addressData.webaddress : addressData
       const newsArticles = await getNewsForRepresentative(candidate.nickName || candidate.firstName, candidate.lastName, data.office)
 
       res.status(200).send({ message: "Here is your reps contact info!", addressData, additionalData, newsArticles })

@@ -34,6 +34,7 @@ export const getRepDetailedBio = async (candidateId: string): Promise<any> => {
   const extractedData = {
     professional: response.data.bio?.candidate.profession,
     political: response.data.bio?.candidate.political,
+    candidateId: candidateId,
   }
 
   return extractedData

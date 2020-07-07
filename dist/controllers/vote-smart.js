@@ -40,6 +40,7 @@ exports.getRepDetailedBio = (candidateId) => __awaiter(void 0, void 0, void 0, f
     const extractedData = {
         professional: (_a = response.data.bio) === null || _a === void 0 ? void 0 : _a.candidate.profession,
         political: (_b = response.data.bio) === null || _b === void 0 ? void 0 : _b.candidate.political,
+        candidateId: candidateId,
     };
     return extractedData;
 });

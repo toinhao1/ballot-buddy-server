@@ -4,7 +4,8 @@ import { authenticate } from 'passport'
 import { getCurrentRepresentatives, getRepOfficeData, getRepDetailedBio, getRepsForBallot, getCandidateOfficeData } from '../controllers/vote-smart'
 import { getNewsForRepresentative } from '../controllers/news-api'
 import { CurrentReps } from '../models/CurrentReps'
-import User from '../models/User'
+import { Ballot } from '../models/Ballot'
+import { User } from '../models/User'
 
 
 const representativeRouter = Router()
@@ -15,7 +16,9 @@ representativeRouter.get('/current-representatives', authenticate('jwt', { sessi
       // check if user already has their reps in DB
       const arrayOfReps = await CurrentReps.findOne({ user: req.user.id })
       // return this as no need to make an api call
+      console.log(arrayOfReps)
       if (arrayOfReps) {
+        console.log("In here")
         const { reps } = arrayOfReps
         res.status(200).send({ message: "Here are your reps!", data: reps })
       } else {
@@ -67,15 +70,22 @@ representativeRouter.post('/current-representative/office-data', authenticate('j
 representativeRouter.get('/current-representatives/ballot', authenticate('jwt', { session: false }), async (req: Request, res: Response) => {
   if (req.user) {
     try {
-      // get the user
-      const user = await User.findById(req.user.id)
-      // extract zipcode
-      const { zipcode, plusFourZip } = user?.address
-      // get the current reps from votesmart
-      const data = await getRepsForBallot(zipcode, plusFourZip)
-      res.status(200).send({ message: "Here are your reps!", data })
-
+      const ballot = await Ballot.findOne({ user: req.user.id })
+      if (ballot) {
+        res.status(200).send({ message: "Here are your reps!", data: ballot })
+      } else {
+        // get the user
+        const user = await User.findById(req.user.id)
+        // extract zipcode
+        const { zipcode, plusFourZip } = user?.address
+        // get the current reps from votesmart
+        const data = await getRepsForBallot(zipcode, plusFourZip)
+        const saveBallot = new Ballot({ user: req.user.id, ballot: data })
+        await saveBallot.save()
+        res.status(200).send({ message: "Here are your reps!", data })
+      }
     } catch (err) {
+      console.log(err)
       res.status(400).send({ message: "There was an error!" })
     }
 

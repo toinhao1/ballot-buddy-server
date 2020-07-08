@@ -3,7 +3,7 @@ import { compare } from 'bcrypt'
 import { sign } from 'jsonwebtoken'
 import { authenticate } from 'passport'
 
-import User, { IUser } from '../models/User'
+import { User, IUser } from '../models/User'
 
 const userRouter = Router()
 

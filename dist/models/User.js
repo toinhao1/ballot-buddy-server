@@ -55,5 +55,4 @@ UserSchema.pre('save', function (next) {
 //   const token = sign({ id: user.id, email: user.email }, String(process.env.JWT_SECRET), { expiresIn: 36000 });
 //   return token;
 // };
-const User = mongoose_1.default.model('User', UserSchema);
-exports.default = User;
+exports.User = mongoose_1.default.model('User', UserSchema);

@@ -2,7 +2,7 @@ import { model, Schema, Document } from 'mongoose';
 
 export interface ICurrentReps extends Document {
   user: string;
-  reps: Array<object>
+  reps: Array<object>;
 }
 
 export const CurrentRepsSchema: Schema = new Schema({
@@ -12,7 +12,7 @@ export const CurrentRepsSchema: Schema = new Schema({
     ref: 'users'
   },
   reps: {
-    type: Schema.Types.Array,
+    type: Array,
     required: true,
   },
 },

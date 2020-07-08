@@ -8,7 +8,7 @@ exports.CurrentRepsSchema = new mongoose_1.Schema({
         ref: 'users'
     },
     reps: {
-        type: mongoose_1.Schema.Types.Array,
+        type: Array,
         required: true,
     },
 }, { timestamps: true });

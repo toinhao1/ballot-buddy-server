@@ -3,6 +3,7 @@ import { authenticate } from 'passport'
 
 import { getCurrentRepresentatives, getRepOfficeData, getRepDetailedBio, getRepsForBallot, getCandidateOfficeData } from '../controllers/vote-smart'
 import { getNewsForRepresentative } from '../controllers/news-api'
+import { CurrentReps } from '../models/CurrentReps'
 import User from '../models/User'
 
 
@@ -10,15 +11,28 @@ const representativeRouter = Router()
 
 representativeRouter.get('/current-representatives', authenticate('jwt', { session: false }), async (req: Request, res: Response) => {
   if (req.user) {
-    // get the user
-    const user = await User.findById(req.user.id)
-    // extract zipcode
-    const { zipcode, plusFourZip } = user?.address
-    // get the current reps from votesmart
-    const data = await getCurrentRepresentatives(zipcode, plusFourZip)
+    try {
+      // check if user already has their reps in DB
+      const arrayOfReps = await CurrentReps.findOne({ user: req.user.id })
+      // return this as no need to make an api call
+      if (arrayOfReps) {
+        const { reps } = arrayOfReps
+        res.status(200).send({ message: "Here are your reps!", data: reps })
+      } else {
+        const user = await User.findById(req.user.id)
+        const { zipcode, plusFourZip } = user?.address
+        // get the current reps from votesmart
+        const data = await getCurrentRepresentatives(zipcode, plusFourZip)
 
-    res.status(200).send({ message: "Here are your reps!", data })
+        const repsToSave = new CurrentReps({ user: req.user.id, reps: data })
+        await repsToSave.save()
 
+        res.status(200).send({ message: "Here are your reps!", data })
+      }
+    } catch (err) {
+      console.log(err)
+      res.status(400).send({ message: err })
+    }
   } else {
     res.send("You must sign in to request this.")
   }

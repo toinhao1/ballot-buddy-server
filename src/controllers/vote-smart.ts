@@ -71,11 +71,12 @@ export const getRepsForBallot = async (zip5: string, zip4: string): Promise<any>
 
   currentReps.forEach((rep: any) => {
     let repArray: Array<object> = []
-    if (ballotObject.hasOwnProperty(rep.office)) {
-      ballotObject[rep.office].push(rep)
+    let removeDotsFromKey = rep.office.replace(/\./g, ' ')
+    if (ballotObject.hasOwnProperty(removeDotsFromKey)) {
+      ballotObject[removeDotsFromKey].push(rep)
     } else {
       repArray.push(rep)
-      ballotObject[rep.office] = repArray
+      ballotObject[removeDotsFromKey] = repArray
     }
   })
 

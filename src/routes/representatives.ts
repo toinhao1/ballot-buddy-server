@@ -16,14 +16,11 @@ representativeRouter.get('/current-representatives', authenticate('jwt', { sessi
       // check if user already has their reps in DB
       const arrayOfReps = await CurrentReps.findOne({ user: req.user.id })
       // return this as no need to make an api call
-      console.log(arrayOfReps)
       if (arrayOfReps) {
-        console.log("In here")
         const { reps } = arrayOfReps
         res.status(200).send({ message: "Here are your reps!", data: reps })
       } else {
-        const user = await User.findById(req.user.id)
-        const { zipcode, plusFourZip } = user?.address
+        const { zipcode, plusFourZip } = req.user.address
         // get the current reps from votesmart
         const data = await getCurrentRepresentatives(zipcode, plusFourZip)
 
@@ -70,17 +67,18 @@ representativeRouter.post('/current-representative/office-data', authenticate('j
 representativeRouter.get('/current-representatives/ballot', authenticate('jwt', { session: false }), async (req: Request, res: Response) => {
   if (req.user) {
     try {
-      const ballot = await Ballot.findOne({ user: req.user.id })
-      if (ballot) {
+      const lastBallot = await Ballot.findOne({ user: req.user.id })
+      if (lastBallot) {
+        const { ballot } = lastBallot
         res.status(200).send({ message: "Here are your reps!", data: ballot })
       } else {
-        // get the user
-        const user = await User.findById(req.user.id)
         // extract zipcode
-        const { zipcode, plusFourZip } = user?.address
+        const { zipcode, plusFourZip } = req.user.address
         // get the current reps from votesmart
         const data = await getRepsForBallot(zipcode, plusFourZip)
+
         const saveBallot = new Ballot({ user: req.user.id, ballot: data })
+
         await saveBallot.save()
         res.status(200).send({ message: "Here are your reps!", data })
       }

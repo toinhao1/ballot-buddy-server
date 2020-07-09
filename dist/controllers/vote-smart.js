@@ -70,12 +70,13 @@ exports.getRepsForBallot = (zip5, zip4) => __awaiter(void 0, void 0, void 0, fun
     let ballotObject = {};
     currentReps.forEach((rep) => {
         let repArray = [];
-        if (ballotObject.hasOwnProperty(rep.office)) {
-            ballotObject[rep.office].push(rep);
+        let removeDotsFromKey = rep.office.replace(/\./g, ' ');
+        if (ballotObject.hasOwnProperty(removeDotsFromKey)) {
+            ballotObject[removeDotsFromKey].push(rep);
         }
         else {
             repArray.push(rep);
-            ballotObject[rep.office] = repArray;
+            ballotObject[removeDotsFromKey] = repArray;
         }
     });
     return ballotObject;

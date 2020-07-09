@@ -3,7 +3,7 @@ import { authenticate } from 'passport'
 
 import { getFullZipCode } from '../controllers/smarty-streets'
 import { Address } from '../models/Address'
-import User from '../models/User'
+import { User } from '../models/User'
 
 const addressRouter = Router()
 

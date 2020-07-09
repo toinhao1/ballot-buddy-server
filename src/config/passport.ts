@@ -1,6 +1,6 @@
 import { Strategy, ExtractJwt, StrategyOptions } from 'passport-jwt'
 import { PassportStatic } from 'passport';
-import User from '../models/User'
+import { User } from '../models/User'
 
 
 let opts: StrategyOptions = {

@@ -5,7 +5,7 @@ import { getCurrentRepresentatives, getRepOfficeData, getRepDetailedBio, getReps
 import { getNewsForRepresentative } from '../controllers/news-api'
 import { CurrentReps } from '../models/CurrentReps'
 import { Ballot } from '../models/Ballot'
-import { User } from '../models/User'
+import { Politicians } from '../models/Politicians'
 
 
 const representativeRouter = Router()
@@ -41,22 +41,39 @@ representativeRouter.get('/current-representatives', authenticate('jwt', { sessi
 representativeRouter.post('/current-representative/office-data', authenticate('jwt', { session: false }), async (req: Request, res: Response) => {
   if (req.user) {
     try {
-      let addressData;
       const { isForBallot, data } = req.body
 
-      if (!isForBallot) {
-        // get specific rep office address, phone number, and website.
-        addressData = await getRepOfficeData(data.candidate_id)
+      const requestedRep = await Politicians.findOne({ candidateId: data.candidate_id })
+      if (requestedRep) {
+        const { contactInfo, detailedBio } = requestedRep
+        const { candidate } = contactInfo.webaddress ? contactInfo.webaddress : contactInfo
+
+        const newsArticles = await getNewsForRepresentative(candidate.nickName || candidate.firstName, candidate.lastName, data.office)
+
+        res.status(200).send({ message: "Here is your reps contact info!", addressData: contactInfo, additionalData: detailedBio, newsArticles })
+
       } else {
-        addressData = await getCandidateOfficeData(data.candidate_id)
+        let addressData;
+        if (!isForBallot) {
+          // get specific rep office address, phone number, and website.
+          addressData = await getRepOfficeData(data.candidate_id)
+        } else {
+          addressData = await getCandidateOfficeData(data.candidate_id)
+        }
+        const additionalData = await getRepDetailedBio(data.candidate_id)
+
+        const { candidate } = addressData.webaddress ? addressData.webaddress : addressData
+        const newsArticles = await getNewsForRepresentative(candidate.nickName || candidate.firstName, candidate.lastName, data.office)
+        const politicianToSave = new Politicians({
+          candidateId: data.candidate_id,
+          contactInfo: addressData,
+          detailedBio: additionalData
+        })
+        await politicianToSave.save()
+        res.status(200).send({ message: "Here is your reps contact info!", addressData, additionalData, newsArticles })
       }
-      const additionalData = await getRepDetailedBio(data.candidate_id)
-
-      const { candidate } = addressData.webaddress ? addressData.webaddress : addressData
-      const newsArticles = await getNewsForRepresentative(candidate.nickName || candidate.firstName, candidate.lastName, data.office)
-
-      res.status(200).send({ message: "Here is your reps contact info!", addressData, additionalData, newsArticles })
     } catch (err) {
+      console.log(err)
       res.status(400).send({ message: "There was an error!", err })
     }
   } else {

@@ -7,9 +7,13 @@ exports.PoliticiansSchema = new mongoose_1.Schema({
         required: true,
         unique: true
     },
-    reps: {
-        type: mongoose_1.Schema.Types.Array,
+    detailedBio: {
+        type: Object,
         required: true,
     },
+    contactInfo: {
+        type: mongoose_1.Schema.Types.Mixed,
+        required: true,
+    }
 }, { timestamps: true });
-exports.Politicians = mongoose_1.model("CurrentReps", exports.PoliticiansSchema);
+exports.Politicians = mongoose_1.model("Politicians", exports.PoliticiansSchema);

@@ -1,8 +1,13 @@
-import { model, Schema, Document } from 'mongoose';
+import { model, Schema, Document, SchemaTypes } from 'mongoose';
 
 export interface IPoliticians extends Document {
   candidateId: string;
-  reps: Array<object>
+  detailedBio: object;
+  contactInfo: any;
+}
+
+export interface IContactInfo {
+  webaddress: object;
 }
 
 export const PoliticiansSchema: Schema = new Schema({
@@ -10,13 +15,16 @@ export const PoliticiansSchema: Schema = new Schema({
     type: String,
     required: true,
     unique: true
-
   },
-  reps: {
-    type: Schema.Types.Array,
+  detailedBio: {
+    type: Object,
     required: true,
   },
+  contactInfo: {
+    type: Schema.Types.Mixed,
+    required: true,
+  }
 },
   { timestamps: true }
 )
-export const Politicians = model<IPoliticians>("CurrentReps", PoliticiansSchema)
+export const Politicians = model<IPoliticians>("Politicians", PoliticiansSchema)

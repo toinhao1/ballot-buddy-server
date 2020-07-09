@@ -15,6 +15,7 @@ const vote_smart_1 = require("../controllers/vote-smart");
 const news_api_1 = require("../controllers/news-api");
 const CurrentReps_1 = require("../models/CurrentReps");
 const Ballot_1 = require("../models/Ballot");
+const Politicians_1 = require("../models/Politicians");
 const representativeRouter = express_1.Router();
 representativeRouter.get('/current-representatives', passport_1.authenticate('jwt', { session: false }), (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     if (req.user) {
@@ -47,21 +48,37 @@ representativeRouter.get('/current-representatives', passport_1.authenticate('jw
 representativeRouter.post('/current-representative/office-data', passport_1.authenticate('jwt', { session: false }), (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     if (req.user) {
         try {
-            let addressData;
             const { isForBallot, data } = req.body;
-            if (!isForBallot) {
-                // get specific rep office address, phone number, and website.
-                addressData = yield vote_smart_1.getRepOfficeData(data.candidate_id);
+            const requestedRep = yield Politicians_1.Politicians.findOne({ candidateId: data.candidate_id });
+            if (requestedRep) {
+                const { contactInfo, detailedBio } = requestedRep;
+                const { candidate } = contactInfo.webaddress ? contactInfo.webaddress : contactInfo;
+                const newsArticles = yield news_api_1.getNewsForRepresentative(candidate.nickName || candidate.firstName, candidate.lastName, data.office);
+                res.status(200).send({ message: "Here is your reps contact info!", addressData: contactInfo, additionalData: detailedBio, newsArticles });
             }
             else {
-                addressData = yield vote_smart_1.getCandidateOfficeData(data.candidate_id);
+                let addressData;
+                if (!isForBallot) {
+                    // get specific rep office address, phone number, and website.
+                    addressData = yield vote_smart_1.getRepOfficeData(data.candidate_id);
+                }
+                else {
+                    addressData = yield vote_smart_1.getCandidateOfficeData(data.candidate_id);
+                }
+                const additionalData = yield vote_smart_1.getRepDetailedBio(data.candidate_id);
+                const { candidate } = addressData.webaddress ? addressData.webaddress : addressData;
+                const newsArticles = yield news_api_1.getNewsForRepresentative(candidate.nickName || candidate.firstName, candidate.lastName, data.office);
+                const politicianToSave = new Politicians_1.Politicians({
+                    candidateId: data.candidate_id,
+                    contactInfo: addressData,
+                    detailedBio: additionalData
+                });
+                yield politicianToSave.save();
+                res.status(200).send({ message: "Here is your reps contact info!", addressData, additionalData, newsArticles });
             }
-            const additionalData = yield vote_smart_1.getRepDetailedBio(data.candidate_id);
-            const { candidate } = addressData.webaddress ? addressData.webaddress : addressData;
-            const newsArticles = yield news_api_1.getNewsForRepresentative(candidate.nickName || candidate.firstName, candidate.lastName, data.office);
-            res.status(200).send({ message: "Here is your reps contact info!", addressData, additionalData, newsArticles });
         }
         catch (err) {
+            console.log(err);
             res.status(400).send({ message: "There was an error!", err });
         }
     }

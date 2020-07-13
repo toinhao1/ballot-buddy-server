@@ -30,11 +30,10 @@ representativeRouter.get('/current-representatives', authenticate('jwt', { sessi
         res.status(200).send({ message: "Here are your reps!", data })
       }
     } catch (err) {
-      console.log(err)
       res.status(400).send({ message: err })
     }
   } else {
-    res.send("You must sign in to request this.")
+    res.send({ message: "You must sign in to request this." })
   }
 })
 
@@ -73,11 +72,10 @@ representativeRouter.post('/current-representative/office-data', authenticate('j
         res.status(200).send({ message: "Here is your reps contact info!", addressData, additionalData, newsArticles })
       }
     } catch (err) {
-      console.log(err)
       res.status(400).send({ message: "There was an error!", err })
     }
   } else {
-    res.send("You must sign in to request this.")
+    res.send({ message: "You must sign in to request this." })
   }
 })
 
@@ -105,7 +103,7 @@ representativeRouter.get('/current-representatives/ballot', authenticate('jwt', 
     }
 
   } else {
-    res.send("You must sign in to request this.")
+    res.send({ message: "You must sign in to request this." })
   }
 })
 

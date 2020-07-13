@@ -15,7 +15,7 @@ userRouter.post('/sign-up', async (req: Request, res: Response) => {
     const userAlreadyExists = await User.findOne({ email: email })
 
     if (userAlreadyExists) {
-      return res.status(400).send("Email is already in use, please sign in.")
+      return res.status(400).send({ message: "Email is already in use, please sign in." })
     }
     const newUser = new User({
       email: email,
@@ -48,11 +48,11 @@ userRouter.post('/login', async (req: Request, res: Response) => {
       );
       res.json({ success: true, token: token, userId: user._id, address: user.address })
     } else {
-      return res.send({ status: 400, error: "Incorrect password" })
+      return res.status(400).send({ message: "Incorrect password" })
     }
 
   } catch (err) {
-    res.status(500).json(err)
+    res.status(500).send({ message: err })
   }
 })
 
@@ -75,7 +75,7 @@ userRouter.put("/update", authenticate('jwt', { session: false }), async (req: R
       res.send(err)
     }
   } else {
-    res.status(400).send("Please sign in to update your email");
+    res.status(400).send({ message: "Please sign in to update your email" });
   }
 })
 

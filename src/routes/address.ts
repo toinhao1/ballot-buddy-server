@@ -45,7 +45,7 @@ addressRouter.post('/set-address', authenticate('jwt', { session: false }), asyn
     const user = await userToSave.save()
     res.status(200).send({ message: "Address has been updated!", user })
   } catch (err) {
-    res.status(400).send('There was an error please try again later.')
+    res.status(400).send({ message: 'Your address is invalid, please input a correct address.' })
   }
 })
 

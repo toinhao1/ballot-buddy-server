@@ -37,12 +37,11 @@ representativeRouter.get('/current-representatives', passport_1.authenticate('jw
             }
         }
         catch (err) {
-            console.log(err);
             res.status(400).send({ message: err });
         }
     }
     else {
-        res.send("You must sign in to request this.");
+        res.send({ message: "You must sign in to request this." });
     }
 }));
 representativeRouter.post('/current-representative/office-data', passport_1.authenticate('jwt', { session: false }), (req, res) => __awaiter(void 0, void 0, void 0, function* () {
@@ -78,12 +77,11 @@ representativeRouter.post('/current-representative/office-data', passport_1.auth
             }
         }
         catch (err) {
-            console.log(err);
             res.status(400).send({ message: "There was an error!", err });
         }
     }
     else {
-        res.send("You must sign in to request this.");
+        res.send({ message: "You must sign in to request this." });
     }
 }));
 representativeRouter.get('/current-representatives/ballot', passport_1.authenticate('jwt', { session: false }), (req, res) => __awaiter(void 0, void 0, void 0, function* () {
@@ -110,7 +108,7 @@ representativeRouter.get('/current-representatives/ballot', passport_1.authentic
         }
     }
     else {
-        res.send("You must sign in to request this.");
+        res.send({ message: "You must sign in to request this." });
     }
 }));
 exports.default = representativeRouter;

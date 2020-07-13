@@ -22,7 +22,7 @@ userRouter.post('/sign-up', (req, res) => __awaiter(void 0, void 0, void 0, func
     try {
         const userAlreadyExists = yield User_1.User.findOne({ email: email });
         if (userAlreadyExists) {
-            return res.status(400).send("Email is already in use, please sign in.");
+            return res.status(400).send({ message: "Email is already in use, please sign in." });
         }
         const newUser = new User_1.User({
             email: email,
@@ -51,11 +51,11 @@ userRouter.post('/login', (req, res) => __awaiter(void 0, void 0, void 0, functi
             res.json({ success: true, token: token, userId: user._id, address: user.address });
         }
         else {
-            return res.send({ status: 400, error: "Incorrect password" });
+            return res.status(400).send({ message: "Incorrect password" });
         }
     }
     catch (err) {
-        res.status(500).json(err);
+        res.status(500).send({ message: err });
     }
 }));
 // update the user email
@@ -75,7 +75,7 @@ userRouter.put("/update", passport_1.authenticate('jwt', { session: false }), (r
         }
     }
     else {
-        res.status(400).send("Please sign in to update your email");
+        res.status(400).send({ message: "Please sign in to update your email" });
     }
 }));
 userRouter.get("/user-profile", passport_1.authenticate('jwt', { session: false }), (req, res) => __awaiter(void 0, void 0, void 0, function* () {

@@ -34,15 +34,19 @@ addressRouter.post('/set-address', passport_1.authenticate('jwt', { session: fal
         const currentAddress = new Address_1.Address(combinedAddress);
         const userToSave = yield User_1.User.findOne({ _id });
         if (!userToSave) {
-            throw new Error("User not found");
+            throw new Error('User not found');
         }
         // set address to user and save.
         userToSave.address = currentAddress;
         const user = yield userToSave.save();
-        res.status(200).send({ message: "Address has been updated!", user });
+        res.status(200).send({ message: 'Address has been updated!', user });
     }
     catch (err) {
-        res.status(400).send({ message: 'Your address is invalid, please input a correct address.' });
+        res
+            .status(400)
+            .send({
+            message: 'Your address is invalid, please input a correct address.',
+        });
     }
 }));
 exports.default = addressRouter;

@@ -1,5 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
+exports.Address = exports.AddressSchema = void 0;
 const mongoose_1 = require("mongoose");
 exports.AddressSchema = new mongoose_1.Schema({
     street: {
@@ -38,7 +39,7 @@ exports.AddressSchema = new mongoose_1.Schema({
     },
     congressionalDistrict: {
         type: String,
-        required: true
-    }
+        required: true,
+    },
 }, { timestamps: true });
-exports.Address = mongoose_1.model("Address", exports.AddressSchema);
+exports.Address = mongoose_1.model('Address', exports.AddressSchema);

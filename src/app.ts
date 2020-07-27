@@ -1,12 +1,12 @@
 import express from 'express';
-import bodyParser from 'body-parser'
-import logger from 'morgan'
-import cors from 'cors'
-import passport from 'passport'
+import bodyParser from 'body-parser';
+import logger from 'morgan';
+import cors from 'cors';
+import passport from 'passport';
 
-import userRouter from './routes/users'
-import addressRouter from './routes/address'
-import representativeRouter from './routes/representatives'
+import userRouter from './routes/users';
+import addressRouter from './routes/address';
+import representativeRouter from './routes/representatives';
 
 const app: express.Application = express();
 
@@ -15,7 +15,7 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
 
 // Initilize passport
-app.use(passport.initialize())
+app.use(passport.initialize());
 //Passport Config
 require('./config/passport')(passport);
 
@@ -25,8 +25,8 @@ app.use(cors());
 app.use(logger('combined'));
 
 // routes for all user based functionality
-app.use(addressRouter)
-app.use(userRouter)
-app.use(representativeRouter)
+app.use(addressRouter);
+app.use(userRouter);
+app.use(representativeRouter);
 
 export default app;

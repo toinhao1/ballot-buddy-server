@@ -14,12 +14,12 @@ mongoose_1.default
     useNewUrlParser: true,
     useCreateIndex: true,
     useFindAndModify: false,
-    useUnifiedTopology: true
+    useUnifiedTopology: true,
 })
     .then(() => {
     console.log('MongoDB Connected');
 })
-    .catch(err => {
+    .catch((err) => {
     console.log(err);
 });
 const port = Number(process.env.PORT) || 5000;

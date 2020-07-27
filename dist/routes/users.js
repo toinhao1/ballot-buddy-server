@@ -22,7 +22,9 @@ userRouter.post('/sign-up', (req, res) => __awaiter(void 0, void 0, void 0, func
     try {
         const userAlreadyExists = yield User_1.User.findOne({ email: email });
         if (userAlreadyExists) {
-            return res.status(400).send({ message: "Email is already in use, please sign in." });
+            return res
+                .status(400)
+                .send({ message: 'Email is already in use, please sign in.' });
         }
         const newUser = new User_1.User({
             email: email,
@@ -43,15 +45,20 @@ userRouter.post('/login', (req, res) => __awaiter(void 0, void 0, void 0, functi
     try {
         const user = yield User_1.User.findOne({ email: email });
         if (!user) {
-            return res.send({ status: 400, error: "Email not found." });
+            return res.send({ status: 400, error: 'Email not found.' });
         }
         const isMatch = yield bcrypt_1.compare(password, user.password);
         if (isMatch) {
-            let token = jsonwebtoken_1.sign({ id: user.id, email: user.email }, String(process.env.PASSPORT_SECRET), { expiresIn: "7d" });
-            res.json({ success: true, token: token, userId: user._id, address: user.address });
+            let token = jsonwebtoken_1.sign({ id: user.id, email: user.email }, String(process.env.PASSPORT_SECRET), { expiresIn: '7d' });
+            res.json({
+                success: true,
+                token: token,
+                userId: user._id,
+                address: user.address,
+            });
         }
         else {
-            return res.status(400).send({ message: "Incorrect password" });
+            return res.status(400).send({ message: 'Incorrect password' });
         }
     }
     catch (err) {
@@ -59,15 +66,14 @@ userRouter.post('/login', (req, res) => __awaiter(void 0, void 0, void 0, functi
     }
 }));
 // update the user email
-userRouter.put("/update", passport_1.authenticate('jwt', { session: false }), (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    var _a;
+userRouter.put('/update', passport_1.authenticate('jwt', { session: false }), (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     if (req.user) {
         const updates = {
-            email: req.body.email
+            email: req.body.email,
         };
         try {
             let updatedUser = yield User_1.User.findOneAndUpdate({ _id: req.user._id }, { $set: updates }, { new: true });
-            yield ((_a = updatedUser) === null || _a === void 0 ? void 0 : _a.save());
+            yield (updatedUser === null || updatedUser === void 0 ? void 0 : updatedUser.save());
             res.json(updatedUser);
         }
         catch (err) {
@@ -75,38 +81,40 @@ userRouter.put("/update", passport_1.authenticate('jwt', { session: false }), (r
         }
     }
     else {
-        res.status(400).send({ message: "Please sign in to update your email" });
+        res.status(400).send({ message: 'Please sign in to update your email' });
     }
 }));
-userRouter.get("/user-profile", passport_1.authenticate('jwt', { session: false }), (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+userRouter.get('/user-profile', passport_1.authenticate('jwt', { session: false }), (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     if (req.user) {
         try {
             const user = yield User_1.User.findOne({ _id: req.user._id });
-            res.status(200).send({ message: "Here is your profile", user });
+            res.status(200).send({ message: 'Here is your profile', user });
         }
         catch (err) {
             res.status(400).send(err);
         }
     }
     else {
-        res.send("Please login!");
+        res.send('Please login!');
     }
 }));
 userRouter.put('/edit-user', passport_1.authenticate('jwt', { session: false }), (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     if (req.user) {
         const updates = {
-            email: req.body.email
+            email: req.body.email,
         };
         try {
             const user = yield User_1.User.findOneAndUpdate({ _id: req.user._id }, { $set: updates }, { new: true });
-            res.status(200).send({ message: "Your profile has been updated.", user });
+            res
+                .status(200)
+                .send({ message: 'Your profile has been updated.', user });
         }
         catch (err) {
             res.status(400).send(err);
         }
     }
     else {
-        res.send("Please login!");
+        res.send('Please login!');
     }
 }));
 exports.default = userRouter;

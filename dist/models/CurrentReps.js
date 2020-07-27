@@ -1,15 +1,16 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
+exports.CurrentReps = exports.CurrentRepsSchema = void 0;
 const mongoose_1 = require("mongoose");
 exports.CurrentRepsSchema = new mongoose_1.Schema({
     user: {
         type: mongoose_1.Schema.Types.ObjectId,
         required: true,
-        ref: 'users'
+        ref: 'users',
     },
     reps: {
         type: Array,
         required: true,
     },
 }, { timestamps: true });
-exports.CurrentReps = mongoose_1.model("CurrentReps", exports.CurrentRepsSchema);
+exports.CurrentReps = mongoose_1.model('CurrentReps', exports.CurrentRepsSchema);

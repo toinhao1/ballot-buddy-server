@@ -59,9 +59,7 @@ representativeRouter.post(
 				});
 				if (requestedRep) {
 					const { contactInfo, detailedBio } = requestedRep;
-					const { candidate } = contactInfo.webaddress
-						? contactInfo.webaddress
-						: contactInfo;
+					const { candidate } = contactInfo.webaddress ? contactInfo.webaddress : contactInfo;
 
 					const newsArticles = await getNewsForRepresentative(
 						candidate.nickName || candidate.firstName,
@@ -69,14 +67,12 @@ representativeRouter.post(
 						data.office
 					);
 
-					res
-						.status(200)
-						.send({
-							message: 'Here is your reps contact info!',
-							addressData: contactInfo,
-							additionalData: detailedBio,
-							newsArticles,
-						});
+					res.status(200).send({
+						message: 'Here is your reps contact info!',
+						addressData: contactInfo,
+						additionalData: detailedBio,
+						newsArticles,
+					});
 				} else {
 					let addressData;
 					if (!isForBallot) {
@@ -87,9 +83,7 @@ representativeRouter.post(
 					}
 					const additionalData = await getRepDetailedBio(data.candidate_id);
 
-					const { candidate } = addressData.webaddress
-						? addressData.webaddress
-						: addressData;
+					const { candidate } = addressData.webaddress ? addressData.webaddress : addressData;
 					const newsArticles = await getNewsForRepresentative(
 						candidate.nickName || candidate.firstName,
 						candidate.lastName,
@@ -101,14 +95,12 @@ representativeRouter.post(
 						detailedBio: additionalData,
 					});
 					await politicianToSave.save();
-					res
-						.status(200)
-						.send({
-							message: 'Here is your reps contact info!',
-							addressData,
-							additionalData,
-							newsArticles,
-						});
+					res.status(200).send({
+						message: 'Here is your reps contact info!',
+						addressData,
+						additionalData,
+						newsArticles,
+					});
 				}
 			} catch (err) {
 				res.status(400).send({ message: 'There was an error!', err });
@@ -128,9 +120,7 @@ representativeRouter.get(
 				const lastBallot = await Ballot.findOne({ user: req.user.id });
 				if (lastBallot) {
 					const { ballot } = lastBallot;
-					res
-						.status(200)
-						.send({ message: 'Here are your reps!', data: ballot });
+					res.status(200).send({ message: 'Here are your reps!', data: ballot });
 				} else {
 					// extract zipcode
 					const { zipcode, plusFourZip } = req.user.address;

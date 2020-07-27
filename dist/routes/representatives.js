@@ -53,13 +53,9 @@ representativeRouter.post('/current-representative/office-data', passport_1.auth
             });
             if (requestedRep) {
                 const { contactInfo, detailedBio } = requestedRep;
-                const { candidate } = contactInfo.webaddress
-                    ? contactInfo.webaddress
-                    : contactInfo;
+                const { candidate } = contactInfo.webaddress ? contactInfo.webaddress : contactInfo;
                 const newsArticles = yield news_api_1.getNewsForRepresentative(candidate.nickName || candidate.firstName, candidate.lastName, data.office);
-                res
-                    .status(200)
-                    .send({
+                res.status(200).send({
                     message: 'Here is your reps contact info!',
                     addressData: contactInfo,
                     additionalData: detailedBio,
@@ -76,9 +72,7 @@ representativeRouter.post('/current-representative/office-data', passport_1.auth
                     addressData = yield vote_smart_1.getCandidateOfficeData(data.candidate_id);
                 }
                 const additionalData = yield vote_smart_1.getRepDetailedBio(data.candidate_id);
-                const { candidate } = addressData.webaddress
-                    ? addressData.webaddress
-                    : addressData;
+                const { candidate } = addressData.webaddress ? addressData.webaddress : addressData;
                 const newsArticles = yield news_api_1.getNewsForRepresentative(candidate.nickName || candidate.firstName, candidate.lastName, data.office);
                 const politicianToSave = new Politicians_1.Politicians({
                     candidateId: data.candidate_id,
@@ -86,9 +80,7 @@ representativeRouter.post('/current-representative/office-data', passport_1.auth
                     detailedBio: additionalData,
                 });
                 yield politicianToSave.save();
-                res
-                    .status(200)
-                    .send({
+                res.status(200).send({
                     message: 'Here is your reps contact info!',
                     addressData,
                     additionalData,
@@ -110,9 +102,7 @@ representativeRouter.get('/current-representatives/ballot', passport_1.authentic
             const lastBallot = yield Ballot_1.Ballot.findOne({ user: req.user.id });
             if (lastBallot) {
                 const { ballot } = lastBallot;
-                res
-                    .status(200)
-                    .send({ message: 'Here are your reps!', data: ballot });
+                res.status(200).send({ message: 'Here are your reps!', data: ballot });
             }
             else {
                 // extract zipcode

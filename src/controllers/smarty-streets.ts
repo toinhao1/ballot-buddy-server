@@ -1,6 +1,16 @@
 import axios from 'axios';
 
-export const getFullZipCode = async (address: any): Promise<any> => {
+interface SmartyStreetsAddress {
+	street: string;
+	secondary?: string;
+	city: string;
+	state: string;
+	zipcode: string;
+}
+
+export const getFullZipCode = async (
+	address: SmartyStreetsAddress
+): Promise<any> => {
 	const response = await axios({
 		method: 'GET',
 		url: `https://us-street.api.smartystreets.com/street-address?auth-id=${String(

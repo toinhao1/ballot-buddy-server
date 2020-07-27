@@ -7,14 +7,6 @@ import { User } from '../models/User';
 
 const addressRouter = Router();
 
-interface addressInput {
-	street: string;
-	secondary?: string;
-	city: string;
-	state: string;
-	zipcode: string;
-}
-
 addressRouter.post(
 	'/set-address',
 	authenticate('jwt', { session: false }),
@@ -22,13 +14,14 @@ addressRouter.post(
 		const { street, city, state, zipCode, secondary } = req.body;
 		const { _id } = req.user;
 
-		const address: addressInput = {
+		const address = {
 			street: street,
 			secondary: secondary || '',
 			city: city,
 			state: state,
 			zipcode: zipCode,
 		};
+
 		try {
 			// make request to get full address
 			const smartyStreetsData = await getFullZipCode(address);
@@ -46,11 +39,9 @@ addressRouter.post(
 			const user = await userToSave.save();
 			res.status(200).send({ message: 'Address has been updated!', user });
 		} catch (err) {
-			res
-				.status(400)
-				.send({
-					message: 'Your address is invalid, please input a correct address.',
-				});
+			res.status(400).send({
+				message: 'Your address is invalid, please input a correct address.',
+			});
 		}
 	}
 );

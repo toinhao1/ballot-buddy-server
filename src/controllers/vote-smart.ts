@@ -120,6 +120,13 @@ export const getSpecificBallotMeasure = async (measureId: string | number): Prom
 			process.env.VOTE_SMART_API_KEY
 		)}&o=JSON&measureId=${measureId}`
 	);
+	const { title, electionDate, summary, summaryUrl } = response.data.measure;
+	const dataToReturn = {
+		title,
+		electionDate,
+		summary,
+		summaryUrl,
+	};
 
-	return response.data;
+	return dataToReturn;
 };

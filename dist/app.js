@@ -11,6 +11,7 @@ const passport_1 = __importDefault(require("passport"));
 const users_1 = __importDefault(require("./routes/users"));
 const address_1 = __importDefault(require("./routes/address"));
 const representatives_1 = __importDefault(require("./routes/representatives"));
+const ballot_1 = __importDefault(require("./routes/ballot"));
 const app = express_1.default();
 //Body parser middleware
 app.use(body_parser_1.default.json());
@@ -27,4 +28,5 @@ app.use(morgan_1.default('combined'));
 app.use(address_1.default);
 app.use(users_1.default);
 app.use(representatives_1.default);
+app.use(ballot_1.default);
 exports.default = app;

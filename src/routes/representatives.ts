@@ -5,12 +5,11 @@ import {
 	getCurrentRepresentatives,
 	getRepOfficeData,
 	getRepDetailedBio,
-	getRepsForBallot,
 	getCandidateOfficeData,
 } from '../controllers/vote-smart';
 import { getNewsForRepresentative } from '../controllers/news-api';
+
 import { CurrentReps } from '../models/CurrentReps';
-import { Ballot } from '../models/Ballot';
 import { Politicians } from '../models/Politicians';
 
 const representativeRouter = Router();
@@ -18,7 +17,7 @@ const representativeRouter = Router();
 representativeRouter.get(
 	'/current-representatives',
 	authenticate('jwt', { session: false }),
-	async (req: Request, res: Response) => {
+	async (req: Request, res: Response): Promise<void> => {
 		if (req.user) {
 			try {
 				// check if user already has their reps in DB
@@ -49,7 +48,7 @@ representativeRouter.get(
 representativeRouter.post(
 	'/current-representative/office-data',
 	authenticate('jwt', { session: false }),
-	async (req: Request, res: Response) => {
+	async (req: Request, res: Response): Promise<void> => {
 		if (req.user) {
 			try {
 				const { isForBallot, data } = req.body;
@@ -108,37 +107,6 @@ representativeRouter.post(
 				}
 			} catch (err) {
 				res.status(400).send({ message: 'There was an error!', err });
-			}
-		} else {
-			res.send({ message: 'You must sign in to request this.' });
-		}
-	}
-);
-
-representativeRouter.get(
-	'/current-representatives/ballot',
-	authenticate('jwt', { session: false }),
-	async (req: Request, res: Response) => {
-		if (req.user) {
-			try {
-				const lastBallot = await Ballot.findOne({ user: req.user.id });
-				if (lastBallot) {
-					const { ballot } = lastBallot;
-					res.status(200).send({ message: 'Here are your reps!', data: ballot });
-				} else {
-					// extract zipcode
-					const { zipcode, plusFourZip } = req.user.address;
-					// get the current reps from votesmart
-					const data = await getRepsForBallot(zipcode, plusFourZip);
-
-					const saveBallot = new Ballot({ user: req.user.id, ballot: data });
-
-					await saveBallot.save();
-					res.status(200).send({ message: 'Here are your reps!', data });
-				}
-			} catch (err) {
-				console.log(err);
-				res.status(400).send({ message: 'There was an error!' });
 			}
 		} else {
 			res.send({ message: 'You must sign in to request this.' });

@@ -10,7 +10,7 @@ const addressRouter = Router();
 addressRouter.post(
 	'/set-address',
 	authenticate('jwt', { session: false }),
-	async (req: Request, res: Response) => {
+	async (req: Request, res: Response): Promise<void> => {
 		const { street, city, state, zipCode, secondary } = req.body;
 		const { _id } = req.user;
 

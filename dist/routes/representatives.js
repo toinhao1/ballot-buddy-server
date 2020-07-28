@@ -14,7 +14,6 @@ const passport_1 = require("passport");
 const vote_smart_1 = require("../controllers/vote-smart");
 const news_api_1 = require("../controllers/news-api");
 const CurrentReps_1 = require("../models/CurrentReps");
-const Ballot_1 = require("../models/Ballot");
 const Politicians_1 = require("../models/Politicians");
 const representativeRouter = express_1.Router();
 representativeRouter.get('/current-representatives', passport_1.authenticate('jwt', { session: false }), (req, res) => __awaiter(void 0, void 0, void 0, function* () {
@@ -100,33 +99,6 @@ representativeRouter.post('/current-representative/office-data', passport_1.auth
         }
         catch (err) {
             res.status(400).send({ message: 'There was an error!', err });
-        }
-    }
-    else {
-        res.send({ message: 'You must sign in to request this.' });
-    }
-}));
-representativeRouter.get('/current-representatives/ballot', passport_1.authenticate('jwt', { session: false }), (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    if (req.user) {
-        try {
-            const lastBallot = yield Ballot_1.Ballot.findOne({ user: req.user.id });
-            if (lastBallot) {
-                const { ballot } = lastBallot;
-                res.status(200).send({ message: 'Here are your reps!', data: ballot });
-            }
-            else {
-                // extract zipcode
-                const { zipcode, plusFourZip } = req.user.address;
-                // get the current reps from votesmart
-                const data = yield vote_smart_1.getRepsForBallot(zipcode, plusFourZip);
-                const saveBallot = new Ballot_1.Ballot({ user: req.user.id, ballot: data });
-                yield saveBallot.save();
-                res.status(200).send({ message: 'Here are your reps!', data });
-            }
-        }
-        catch (err) {
-            console.log(err);
-            res.status(400).send({ message: 'There was an error!' });
         }
     }
     else {

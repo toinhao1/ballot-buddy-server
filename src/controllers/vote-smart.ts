@@ -1,16 +1,9 @@
 import axios from 'axios';
 
-export const getCurrentRepresentatives = async (
-	zip5: string,
-	zip4: string
-): Promise<any> => {
-	const response = await axios.get(
-		`https://votesmart.org/x/search?s=${zip5}${zip4}`
-	);
+export const getCurrentRepresentatives = async (zip5: string, zip4: string): Promise<any> => {
+	const response = await axios.get(`https://votesmart.org/x/search?s=${zip5}${zip4}`);
 
-	const currentReps = response.data.results.filter(
-		(rep: any) => rep.incumbent === true
-	);
+	const currentReps = response.data.results.filter((rep: any) => rep.incumbent === true);
 
 	return currentReps;
 };
@@ -57,9 +50,7 @@ export const getRepDetailedBio = async (candidateId: string): Promise<any> => {
 	return extractedData;
 };
 
-export const getCandidateOfficeData = async (
-	candidateId: string
-): Promise<any> => {
+export const getCandidateOfficeData = async (candidateId: string): Promise<any> => {
 	const firstRes = await axios.get(
 		`http://api.votesmart.org/Address.getCampaign?key=${String(
 			process.env.VOTE_SMART_API_KEY
@@ -89,18 +80,12 @@ export const getCandidateOfficeData = async (
 	return { ...firstExtractedData, ...secondExtractedData };
 };
 
-export const getRepsForBallot = async (
-	zip5: string,
-	zip4: string
-): Promise<any> => {
-	const response = await axios.get(
-		`https://votesmart.org/x/search?s=${zip5}${zip4}`
-	);
+export const getRepsForBallot = async (zip5: string, zip4: string): Promise<any> => {
+	const response = await axios.get(`https://votesmart.org/x/search?s=${zip5}${zip4}`);
 
 	const currentReps = response.data.results.filter(
 		(rep: any) =>
-			rep.electioncandidatestatus === 'Running' ||
-			rep.electioncandidatestatus === 'Announced'
+			rep.electioncandidatestatus === 'Running' || rep.electioncandidatestatus === 'Announced'
 	);
 
 	let ballotObject: any = {};
@@ -117,4 +102,24 @@ export const getRepsForBallot = async (
 	});
 
 	return ballotObject;
+};
+
+export const getBallotMeasures = async (stateId: string): Promise<any> => {
+	const response = await axios.get(
+		`http://api.votesmart.org/Measure.getMeasuresByYearState?key=${String(
+			process.env.VOTE_SMART_API_KEY
+		)}&o=JSON&year=${new Date().getFullYear()}&stateId=${stateId}`
+	);
+
+	return response.data.measures.measure;
+};
+
+export const getSpecificBallotMeasure = async (measureId: string | number): Promise<any> => {
+	const response = await axios.get(
+		`http://api.votesmart.org/Measure.getMeasure?key=${String(
+			process.env.VOTE_SMART_API_KEY
+		)}&o=JSON&measureId=${measureId}`
+	);
+
+	return response.data;
 };

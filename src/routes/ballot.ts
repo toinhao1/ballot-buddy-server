@@ -2,7 +2,11 @@ import { Router, Request, Response } from 'express';
 import { authenticate } from 'passport';
 
 import { Ballot } from '../models/Ballot';
-import { getRepsForBallot, getBallotMeasures } from '../controllers/vote-smart';
+import {
+	getRepsForBallot,
+	getBallotMeasures,
+	getSpecificBallotMeasure,
+} from '../controllers/vote-smart';
 import { statesToIgnore } from '../utils/statesToIgnore';
 
 const ballotRouter = Router();
@@ -10,7 +14,7 @@ const ballotRouter = Router();
 ballotRouter.get(
 	'/current-ballot',
 	authenticate('jwt', { session: false }),
-	async (req: Request, res: Response) => {
+	async (req: Request, res: Response): Promise<void> => {
 		if (req.user) {
 			try {
 				const lastBallot = await Ballot.findOne({ user: req.user.id });
@@ -39,11 +43,23 @@ ballotRouter.get(
 					res.status(200).send({ message: 'Here is your current ballot!', races, ballotMeasures });
 				}
 			} catch (err) {
-				console.log(err);
 				res.status(400).send({ message: 'There was an error!' });
 			}
 		} else {
 			res.send({ message: 'You must sign in to request this.' });
+		}
+	}
+);
+
+ballotRouter.post(
+	'/selected-measure',
+	authenticate('jwt', { session: false }),
+	async (req: Request, res: Response): Promise<void> => {
+		try {
+			const specificMeasure = await getSpecificBallotMeasure(req.body.measureId);
+			res.status(200).send({ message: 'Here is the measure data!', specificMeasure });
+		} catch (err) {
+			res.status(400).send({ message: 'There was an error!' });
 		}
 	}
 );

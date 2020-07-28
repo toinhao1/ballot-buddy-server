@@ -17,7 +17,7 @@ const representativeRouter = Router();
 representativeRouter.get(
 	'/current-representatives',
 	authenticate('jwt', { session: false }),
-	async (req: Request, res: Response) => {
+	async (req: Request, res: Response): Promise<void> => {
 		if (req.user) {
 			try {
 				// check if user already has their reps in DB
@@ -48,7 +48,7 @@ representativeRouter.get(
 representativeRouter.post(
 	'/current-representative/office-data',
 	authenticate('jwt', { session: false }),
-	async (req: Request, res: Response) => {
+	async (req: Request, res: Response): Promise<void> => {
 		if (req.user) {
 			try {
 				const { isForBallot, data } = req.body;

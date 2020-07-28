@@ -44,12 +44,20 @@ ballotRouter.get('/current-ballot', passport_1.authenticate('jwt', { session: fa
             }
         }
         catch (err) {
-            console.log(err);
             res.status(400).send({ message: 'There was an error!' });
         }
     }
     else {
         res.send({ message: 'You must sign in to request this.' });
+    }
+}));
+ballotRouter.post('/selected-measure', passport_1.authenticate('jwt', { session: false }), (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        const specificMeasure = yield vote_smart_1.getSpecificBallotMeasure(req.body.measureId);
+        res.status(200).send({ message: 'Here is the measure data!', specificMeasure });
+    }
+    catch (err) {
+        res.status(400).send({ message: 'There was an error!' });
     }
 }));
 exports.default = ballotRouter;

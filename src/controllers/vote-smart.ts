@@ -111,7 +111,7 @@ export const getBallotMeasures = async (stateId: string): Promise<any> => {
 		)}&o=JSON&year=${new Date().getFullYear()}&stateId=${stateId}`
 	);
 
-	return response.data;
+	return response.data.measures.measure;
 };
 
 export const getSpecificBallotMeasure = async (measureId: string | number): Promise<any> => {

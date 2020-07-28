@@ -7,6 +7,7 @@ import passport from 'passport';
 import userRouter from './routes/users';
 import addressRouter from './routes/address';
 import representativeRouter from './routes/representatives';
+import ballotRouter from './routes/ballot';
 
 const app: express.Application = express();
 
@@ -28,5 +29,6 @@ app.use(logger('combined'));
 app.use(addressRouter);
 app.use(userRouter);
 app.use(representativeRouter);
+app.use(ballotRouter);
 
 export default app;

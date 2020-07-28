@@ -84,7 +84,7 @@ exports.getRepsForBallot = (zip5, zip4) => __awaiter(void 0, void 0, void 0, fun
 });
 exports.getBallotMeasures = (stateId) => __awaiter(void 0, void 0, void 0, function* () {
     const response = yield axios_1.default.get(`http://api.votesmart.org/Measure.getMeasuresByYearState?key=${String(process.env.VOTE_SMART_API_KEY)}&o=JSON&year=${new Date().getFullYear()}&stateId=${stateId}`);
-    return response.data;
+    return response.data.measures.measure;
 });
 exports.getSpecificBallotMeasure = (measureId) => __awaiter(void 0, void 0, void 0, function* () {
     const response = yield axios_1.default.get(`http://api.votesmart.org/Measure.getMeasure?key=${String(process.env.VOTE_SMART_API_KEY)}&o=JSON&measureId=${measureId}`);

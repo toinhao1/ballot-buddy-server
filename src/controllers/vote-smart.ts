@@ -111,5 +111,15 @@ export const getBallotMeasures = async (stateId: string): Promise<any> => {
 		)}&o=JSON&year=${new Date().getFullYear()}&stateId=${stateId}`
 	);
 
-	return response;
+	return response.data;
+};
+
+export const getSpecificBallotMeasure = async (measureId: string | number): Promise<any> => {
+	const response = await axios.get(
+		`http://api.votesmart.org/Measure.getMeasure?key=${String(
+			process.env.VOTE_SMART_API_KEY
+		)}&o=JSON&measureId=${measureId}`
+	);
+
+	return response.data;
 };

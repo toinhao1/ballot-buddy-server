@@ -12,7 +12,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.getRepsForBallot = exports.getCandidateOfficeData = exports.getRepDetailedBio = exports.getRepOfficeData = exports.getCurrentRepresentatives = void 0;
+exports.getBallotMeasures = exports.getRepsForBallot = exports.getCandidateOfficeData = exports.getRepDetailedBio = exports.getRepOfficeData = exports.getCurrentRepresentatives = void 0;
 const axios_1 = __importDefault(require("axios"));
 exports.getCurrentRepresentatives = (zip5, zip4) => __awaiter(void 0, void 0, void 0, function* () {
     const response = yield axios_1.default.get(`https://votesmart.org/x/search?s=${zip5}${zip4}`);
@@ -67,8 +67,7 @@ exports.getCandidateOfficeData = (candidateId) => __awaiter(void 0, void 0, void
 });
 exports.getRepsForBallot = (zip5, zip4) => __awaiter(void 0, void 0, void 0, function* () {
     const response = yield axios_1.default.get(`https://votesmart.org/x/search?s=${zip5}${zip4}`);
-    const currentReps = response.data.results.filter((rep) => rep.electioncandidatestatus === 'Running' ||
-        rep.electioncandidatestatus === 'Announced');
+    const currentReps = response.data.results.filter((rep) => rep.electioncandidatestatus === 'Running' || rep.electioncandidatestatus === 'Announced');
     let ballotObject = {};
     currentReps.forEach((rep) => {
         let repArray = [];
@@ -82,4 +81,8 @@ exports.getRepsForBallot = (zip5, zip4) => __awaiter(void 0, void 0, void 0, fun
         }
     });
     return ballotObject;
+});
+exports.getBallotMeasures = (stateId) => __awaiter(void 0, void 0, void 0, function* () {
+    const response = yield axios_1.default.get(`http://api.votesmart.org/Measure.getMeasuresByYearState?key=${String(process.env.VOTE_SMART_API_KEY)}&o=JSON&year=${new Date().getFullYear()}&stateId=${stateId}`);
+    return response;
 });

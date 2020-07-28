@@ -9,9 +9,11 @@ import {
 	getCandidateOfficeData,
 } from '../controllers/vote-smart';
 import { getNewsForRepresentative } from '../controllers/news-api';
+
 import { CurrentReps } from '../models/CurrentReps';
 import { Ballot } from '../models/Ballot';
 import { Politicians } from '../models/Politicians';
+import { statesToIgnore } from '../utils/statesToIgnore';
 
 const representativeRouter = Router();
 
@@ -130,6 +132,11 @@ representativeRouter.get(
 					const { zipcode, plusFourZip } = req.user.address;
 					// get the current reps from votesmart
 					const data = await getRepsForBallot(zipcode, plusFourZip);
+
+					// get ballot measures for ballot if users state allows for it
+					if (!statesToIgnore.hasOwnProperty(req.user.address.state)) {
+						// then we get the ballot measures
+					}
 
 					const saveBallot = new Ballot({ user: req.user.id, ballot: data });
 

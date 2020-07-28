@@ -34,7 +34,6 @@ ballotRouter.get('/current-ballot', passport_1.authenticate('jwt', { session: fa
                     // then we get the ballot measures
                     ballotMeasures = yield vote_smart_1.getBallotMeasures(req.user.address.state);
                 }
-                console.log(ballotMeasures);
                 const saveBallot = new Ballot_1.Ballot({
                     user: req.user.id,
                     ballot: { races, ballotMeasures },

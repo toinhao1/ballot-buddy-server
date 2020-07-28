@@ -33,7 +33,6 @@ ballotRouter.get(
 						// then we get the ballot measures
 						ballotMeasures = await getBallotMeasures(req.user.address.state);
 					}
-					console.log(ballotMeasures);
 					const saveBallot = new Ballot({
 						user: req.user.id,
 						ballot: { races, ballotMeasures },

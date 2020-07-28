@@ -54,7 +54,12 @@ representativeRouter.post('/current-representative/office-data', passport_1.auth
             if (requestedRep) {
                 const { contactInfo, detailedBio } = requestedRep;
                 const { candidate } = contactInfo.webaddress ? contactInfo.webaddress : contactInfo;
-                const newsArticles = yield news_api_1.getNewsForRepresentative(candidate.nickName || candidate.firstName, candidate.lastName, data.office);
+                const dataForGnews = {
+                    firstName: candidate.nickName || candidate.firstName,
+                    lastName: candidate.lastName,
+                    office: data.office,
+                };
+                const newsArticles = yield news_api_1.getNewsForRepresentative(dataForGnews);
                 res.status(200).send({
                     message: 'Here is your reps contact info!',
                     addressData: contactInfo,
@@ -73,7 +78,12 @@ representativeRouter.post('/current-representative/office-data', passport_1.auth
                 }
                 const additionalData = yield vote_smart_1.getRepDetailedBio(data.candidate_id);
                 const { candidate } = addressData.webaddress ? addressData.webaddress : addressData;
-                const newsArticles = yield news_api_1.getNewsForRepresentative(candidate.nickName || candidate.firstName, candidate.lastName, data.office);
+                const dataForGnews = {
+                    firstName: candidate.nickName || candidate.firstName,
+                    lastName: candidate.lastName,
+                    office: data.office,
+                };
+                const newsArticles = yield news_api_1.getNewsForRepresentative(dataForGnews);
                 const politicianToSave = new Politicians_1.Politicians({
                     candidateId: data.candidate_id,
                     contactInfo: addressData,

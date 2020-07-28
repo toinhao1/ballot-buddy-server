@@ -61,11 +61,13 @@ representativeRouter.post(
 					const { contactInfo, detailedBio } = requestedRep;
 					const { candidate } = contactInfo.webaddress ? contactInfo.webaddress : contactInfo;
 
-					const newsArticles = await getNewsForRepresentative(
-						candidate.nickName || candidate.firstName,
-						candidate.lastName,
-						data.office
-					);
+					const dataForGnews = {
+						firstName: candidate.nickName || candidate.firstName,
+						lastName: candidate.lastName,
+						office: data.office,
+					};
+
+					const newsArticles = await getNewsForRepresentative(dataForGnews);
 
 					res.status(200).send({
 						message: 'Here is your reps contact info!',
@@ -84,11 +86,13 @@ representativeRouter.post(
 					const additionalData = await getRepDetailedBio(data.candidate_id);
 
 					const { candidate } = addressData.webaddress ? addressData.webaddress : addressData;
-					const newsArticles = await getNewsForRepresentative(
-						candidate.nickName || candidate.firstName,
-						candidate.lastName,
-						data.office
-					);
+
+					const dataForGnews = {
+						firstName: candidate.nickName || candidate.firstName,
+						lastName: candidate.lastName,
+						office: data.office,
+					};
+					const newsArticles = await getNewsForRepresentative(dataForGnews);
 					const politicianToSave = new Politicians({
 						candidateId: data.candidate_id,
 						contactInfo: addressData,

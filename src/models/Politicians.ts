@@ -28,7 +28,4 @@ export const PoliticiansSchema: Schema = new Schema(
 	},
 	{ timestamps: true }
 );
-export const Politicians = model<IPoliticians>(
-	'Politicians',
-	PoliticiansSchema
-);
+export const Politicians = model<IPoliticians>('Politicians', PoliticiansSchema);

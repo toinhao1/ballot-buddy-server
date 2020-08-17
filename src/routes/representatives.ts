@@ -53,57 +53,108 @@ representativeRouter.post(
 			try {
 				const { isForBallot, data } = req.body;
 
-				const requestedRep = await Politicians.findOne({
-					candidateId: data.candidate_id,
-				});
-				if (requestedRep) {
-					const { contactInfo, detailedBio } = requestedRep;
-					const { candidate } = contactInfo.webaddress ? contactInfo.webaddress : contactInfo;
+				if (isForBallot) {
+					// add a one for candidate type data
+					const isForBallotId = data.candidate_id + '1';
+					console.log(isForBallotId);
 
-					const dataForGnews = {
-						firstName: candidate.nickName || candidate.firstName,
-						lastName: candidate.lastName,
-						office: data.office,
-					};
-
-					const newsArticles = await getNewsForRepresentative(dataForGnews);
-
-					res.status(200).send({
-						message: 'Here is your reps contact info!',
-						addressData: contactInfo,
-						additionalData: detailedBio,
-						newsArticles,
+					// check if rep is already in the db
+					const requestedRep = await Politicians.findOne({
+						candidateId: isForBallotId,
 					});
-				} else {
-					let addressData;
-					if (!isForBallot) {
-						// get specific rep office address, phone number, and website.
-						addressData = await getRepOfficeData(data.candidate_id);
+
+					if (requestedRep) {
+						const { contactInfo, detailedBio } = requestedRep;
+						const { candidate } = contactInfo.webaddress ? contactInfo.webaddress : contactInfo;
+
+						const dataForGnews = {
+							firstName: candidate.nickName || candidate.firstName,
+							lastName: candidate.lastName,
+							office: data.office,
+						};
+
+						const newsArticles = await getNewsForRepresentative(dataForGnews);
+
+						res.status(200).send({
+							message: 'Here is your reps contact info!',
+							addressData: contactInfo,
+							additionalData: detailedBio,
+							newsArticles,
+						});
 					} else {
-						addressData = await getCandidateOfficeData(data.candidate_id);
+						const addressData = await getCandidateOfficeData(data.candidate_id);
+
+						const additionalData = await getRepDetailedBio(data.candidate_id);
+
+						const { candidate } = addressData.webaddress ? addressData.webaddress : addressData;
+
+						const dataForGnews = {
+							firstName: candidate.nickName || candidate.firstName,
+							lastName: candidate.lastName,
+							office: data.office,
+						};
+						const newsArticles = await getNewsForRepresentative(dataForGnews);
+						const politicianToSave = new Politicians({
+							candidateId: isForBallotId,
+							contactInfo: addressData,
+							detailedBio: additionalData,
+						});
+						await politicianToSave.save();
+						res.status(201).send({
+							message: 'Here is your reps contact info!',
+							addressData,
+							additionalData,
+							newsArticles,
+						});
 					}
-					const additionalData = await getRepDetailedBio(data.candidate_id);
-
-					const { candidate } = addressData.webaddress ? addressData.webaddress : addressData;
-
-					const dataForGnews = {
-						firstName: candidate.nickName || candidate.firstName,
-						lastName: candidate.lastName,
-						office: data.office,
-					};
-					const newsArticles = await getNewsForRepresentative(dataForGnews);
-					const politicianToSave = new Politicians({
+				} else {
+					const requestedRep = await Politicians.findOne({
 						candidateId: data.candidate_id,
-						contactInfo: addressData,
-						detailedBio: additionalData,
 					});
-					await politicianToSave.save();
-					res.status(200).send({
-						message: 'Here is your reps contact info!',
-						addressData,
-						additionalData,
-						newsArticles,
-					});
+					if (requestedRep) {
+						const { contactInfo, detailedBio } = requestedRep;
+						const { candidate } = contactInfo.webaddress ? contactInfo.webaddress : contactInfo;
+
+						const dataForGnews = {
+							firstName: candidate.nickName || candidate.firstName,
+							lastName: candidate.lastName,
+							office: data.office,
+						};
+
+						const newsArticles = await getNewsForRepresentative(dataForGnews);
+
+						res.status(200).send({
+							message: 'Here is your reps contact info!',
+							addressData: contactInfo,
+							additionalData: detailedBio,
+							newsArticles,
+						});
+					} else {
+						const addressData = await getRepOfficeData(data.candidate_id);
+
+						const additionalData = await getRepDetailedBio(data.candidate_id);
+
+						const { candidate } = addressData.webaddress ? addressData.webaddress : addressData;
+
+						const dataForGnews = {
+							firstName: candidate.nickName || candidate.firstName,
+							lastName: candidate.lastName,
+							office: data.office,
+						};
+						const newsArticles = await getNewsForRepresentative(dataForGnews);
+						const politicianToSave = new Politicians({
+							candidateId: data.candidate_id,
+							contactInfo: addressData,
+							detailedBio: additionalData,
+						});
+						await politicianToSave.save();
+						res.status(201).send({
+							message: 'Here is your reps contact info!',
+							addressData,
+							additionalData,
+							newsArticles,
+						});
+					}
 				}
 			} catch (err) {
 				res.status(400).send({ message: 'There was an error!', err });

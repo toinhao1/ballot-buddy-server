@@ -24,7 +24,7 @@ addressRouter.post('/set-address', passport_1.authenticate('jwt', { session: fal
         street: street,
         secondary: secondary || '',
         city: city,
-        state: state,
+        state: state.toUpperCase(),
         zipcode: zipCode,
     };
     try {

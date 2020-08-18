@@ -34,15 +34,21 @@ ballotRouter.get('/current-ballot', passport_1.authenticate('jwt', { session: fa
                     // then we get the ballot measures
                     ballotMeasures = yield vote_smart_1.getBallotMeasures(req.user.address.state);
                 }
+                const ballotWithMeasure = { races, ballotMeasures };
+                const ballotWithoutMeasures = { races };
+                const ballot = statesToIgnore_1.statesToIgnore.hasOwnProperty(req.user.address.state)
+                    ? ballotWithoutMeasures
+                    : ballotWithMeasure;
                 const saveBallot = new Ballot_1.Ballot({
                     user: req.user.id,
-                    ballot: { races, ballotMeasures },
+                    ballot: ballot,
                 });
                 yield saveBallot.save();
-                res.status(200).send({ message: 'Here is your current ballot!', races, ballotMeasures });
+                res.status(200).send({ message: 'Here is your current ballot!', ballot });
             }
         }
         catch (err) {
+            console.log(err);
             res.status(400).send({ message: 'There was an error!' });
         }
     }

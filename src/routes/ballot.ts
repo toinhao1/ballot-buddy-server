@@ -33,15 +33,22 @@ ballotRouter.get(
 						// then we get the ballot measures
 						ballotMeasures = await getBallotMeasures(req.user.address.state);
 					}
+					const ballotWithMeasure = { races, ballotMeasures };
+					const ballotWithoutMeasures = { races };
+
+					const ballot = statesToIgnore.hasOwnProperty(req.user.address.state)
+						? ballotWithoutMeasures
+						: ballotWithMeasure;
 					const saveBallot = new Ballot({
 						user: req.user.id,
-						ballot: { races, ballotMeasures },
+						ballot: ballot,
 					});
 
 					await saveBallot.save();
-					res.status(200).send({ message: 'Here is your current ballot!', races, ballotMeasures });
+					res.status(200).send({ message: 'Here is your current ballot!', ballot });
 				}
 			} catch (err) {
+				console.log(err);
 				res.status(400).send({ message: 'There was an error!' });
 			}
 		} else {

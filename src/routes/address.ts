@@ -21,7 +21,7 @@ addressRouter.post(
 			street: street,
 			secondary: secondary || '',
 			city: city,
-			state: state,
+			state: state.toUpperCase(),
 			zipcode: zipCode,
 		};
 

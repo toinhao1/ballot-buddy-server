@@ -13,18 +13,18 @@ const express_1 = require("express");
 const bcrypt_1 = require("bcrypt");
 const jsonwebtoken_1 = require("jsonwebtoken");
 const passport_1 = require("passport");
-const User_1 = require("../models/User");
+const models_1 = require("../models");
 const userRouter = express_1.Router();
 // route to SignUp a new user
 userRouter.post('/sign-up', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const email = req.body.email;
     const password = req.body.password;
     try {
-        const userAlreadyExists = yield User_1.User.findOne({ email: email });
+        const userAlreadyExists = yield models_1.User.findOne({ email: email });
         if (userAlreadyExists) {
             return res.status(400).send({ message: 'Email is already in use, please sign in.' });
         }
-        const newUser = new User_1.User({
+        const newUser = new models_1.User({
             email: email,
             name: req.body.name,
             password: password,
@@ -41,7 +41,7 @@ userRouter.post('/login', (req, res) => __awaiter(void 0, void 0, void 0, functi
     const email = req.body.email;
     const password = req.body.password;
     try {
-        const user = yield User_1.User.findOne({ email: email });
+        const user = yield models_1.User.findOne({ email: email });
         if (!user) {
             return res.send({ status: 400, error: 'Email not found.' });
         }
@@ -72,7 +72,7 @@ userRouter.put('/update', passport_1.authenticate('jwt', { session: false }), (r
             email: req.body.email,
         };
         try {
-            let updatedUser = yield User_1.User.findOneAndUpdate({ _id: req.user._id }, { $set: updates }, { new: true });
+            let updatedUser = yield models_1.User.findOneAndUpdate({ _id: req.user._id }, { $set: updates }, { new: true });
             yield (updatedUser === null || updatedUser === void 0 ? void 0 : updatedUser.save());
             res.json(updatedUser);
         }
@@ -87,7 +87,7 @@ userRouter.put('/update', passport_1.authenticate('jwt', { session: false }), (r
 userRouter.get('/user-profile', passport_1.authenticate('jwt', { session: false }), (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     if (req.user) {
         try {
-            const user = yield User_1.User.findOne({ _id: req.user._id });
+            const user = yield models_1.User.findOne({ _id: req.user._id });
             res.status(200).send({ message: 'Here is your profile', user });
         }
         catch (err) {
@@ -104,7 +104,7 @@ userRouter.put('/edit-user', passport_1.authenticate('jwt', { session: false }),
             email: req.body.email,
         };
         try {
-            const user = yield User_1.User.findOneAndUpdate({ _id: req.user._id }, { $set: updates }, { new: true });
+            const user = yield models_1.User.findOneAndUpdate({ _id: req.user._id }, { $set: updates }, { new: true });
             res.status(200).send({ message: 'Your profile has been updated.', user });
         }
         catch (err) {

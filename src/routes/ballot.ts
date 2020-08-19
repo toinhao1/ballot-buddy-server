@@ -1,7 +1,7 @@
 import { Router, Request, Response } from 'express';
 import { authenticate } from 'passport';
 
-import { Ballot } from '../models/Ballot';
+import { Ballot } from '../models';
 import {
 	getRepsForBallot,
 	getBallotMeasures,

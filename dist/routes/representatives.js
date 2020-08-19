@@ -13,14 +13,13 @@ const express_1 = require("express");
 const passport_1 = require("passport");
 const vote_smart_1 = require("../controllers/vote-smart");
 const news_api_1 = require("../controllers/news-api");
-const CurrentReps_1 = require("../models/CurrentReps");
-const Politicians_1 = require("../models/Politicians");
+const models_1 = require("../models");
 const representativeRouter = express_1.Router();
 representativeRouter.get('/current-representatives', passport_1.authenticate('jwt', { session: false }), (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     if (req.user) {
         try {
             // check if user already has their reps in DB
-            const arrayOfReps = yield CurrentReps_1.CurrentReps.findOne({ user: req.user.id });
+            const arrayOfReps = yield models_1.CurrentReps.findOne({ user: req.user.id });
             // return this as no need to make an api call
             if (arrayOfReps) {
                 const { reps } = arrayOfReps;
@@ -30,7 +29,7 @@ representativeRouter.get('/current-representatives', passport_1.authenticate('jw
                 const { zipcode, plusFourZip } = req.user.address;
                 // get the current reps from votesmart
                 const data = yield vote_smart_1.getCurrentRepresentatives(zipcode, plusFourZip);
-                const repsToSave = new CurrentReps_1.CurrentReps({ user: req.user.id, reps: data });
+                const repsToSave = new models_1.CurrentReps({ user: req.user.id, reps: data });
                 yield repsToSave.save();
                 res.status(200).send({ message: 'Here are your reps!', data });
             }
@@ -52,7 +51,7 @@ representativeRouter.post('/current-representative/office-data', passport_1.auth
                 const isForBallotId = data.candidate_id + '1';
                 console.log(isForBallotId);
                 // check if rep is already in the db
-                const requestedRep = yield Politicians_1.Politicians.findOne({
+                const requestedRep = yield models_1.Politicians.findOne({
                     candidateId: isForBallotId,
                 });
                 if (requestedRep) {
@@ -81,7 +80,7 @@ representativeRouter.post('/current-representative/office-data', passport_1.auth
                         office: data.office,
                     };
                     const newsArticles = yield news_api_1.getNewsForRepresentative(dataForGnews);
-                    const politicianToSave = new Politicians_1.Politicians({
+                    const politicianToSave = new models_1.Politicians({
                         candidateId: isForBallotId,
                         contactInfo: addressData,
                         detailedBio: additionalData,
@@ -96,7 +95,7 @@ representativeRouter.post('/current-representative/office-data', passport_1.auth
                 }
             }
             else {
-                const requestedRep = yield Politicians_1.Politicians.findOne({
+                const requestedRep = yield models_1.Politicians.findOne({
                     candidateId: data.candidate_id,
                 });
                 if (requestedRep) {
@@ -125,7 +124,7 @@ representativeRouter.post('/current-representative/office-data', passport_1.auth
                         office: data.office,
                     };
                     const newsArticles = yield news_api_1.getNewsForRepresentative(dataForGnews);
-                    const politicianToSave = new Politicians_1.Politicians({
+                    const politicianToSave = new models_1.Politicians({
                         candidateId: data.candidate_id,
                         contactInfo: addressData,
                         detailedBio: additionalData,

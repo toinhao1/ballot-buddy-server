@@ -2,11 +2,7 @@ import { Router, Request, Response } from 'express';
 import { authenticate } from 'passport';
 
 import { getFullZipCode } from '../controllers/smarty-streets';
-
-import { CurrentReps } from '../models/CurrentReps';
-import { Ballot } from '../models/Ballot';
-import { Address } from '../models/Address';
-import { User } from '../models/User';
+import { User, Address, Ballot, CurrentReps } from '../models';
 
 const addressRouter = Router();
 

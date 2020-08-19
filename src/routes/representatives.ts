@@ -9,8 +9,7 @@ import {
 } from '../controllers/vote-smart';
 import { getNewsForRepresentative } from '../controllers/news-api';
 
-import { CurrentReps } from '../models/CurrentReps';
-import { Politicians } from '../models/Politicians';
+import { CurrentReps, Politicians } from '../models';
 
 const representativeRouter = Router();
 

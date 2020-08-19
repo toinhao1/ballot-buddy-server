@@ -11,14 +11,14 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 Object.defineProperty(exports, "__esModule", { value: true });
 const express_1 = require("express");
 const passport_1 = require("passport");
-const Ballot_1 = require("../models/Ballot");
+const models_1 = require("../models");
 const vote_smart_1 = require("../controllers/vote-smart");
 const statesToIgnore_1 = require("../utils/statesToIgnore");
 const ballotRouter = express_1.Router();
 ballotRouter.get('/current-ballot', passport_1.authenticate('jwt', { session: false }), (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     if (req.user) {
         try {
-            const lastBallot = yield Ballot_1.Ballot.findOne({ user: req.user.id });
+            const lastBallot = yield models_1.Ballot.findOne({ user: req.user.id });
             if (lastBallot) {
                 const { ballot } = lastBallot;
                 res.status(200).send({ message: 'Here is your current ballot!', ballot });
@@ -39,7 +39,7 @@ ballotRouter.get('/current-ballot', passport_1.authenticate('jwt', { session: fa
                 const ballot = statesToIgnore_1.statesToIgnore.hasOwnProperty(req.user.address.state)
                     ? ballotWithoutMeasures
                     : ballotWithMeasure;
-                const saveBallot = new Ballot_1.Ballot({
+                const saveBallot = new models_1.Ballot({
                     user: req.user.id,
                     ballot: ballot,
                 });

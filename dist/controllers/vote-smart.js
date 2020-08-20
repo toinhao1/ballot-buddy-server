@@ -107,13 +107,15 @@ exports.getBallotMeasures = (stateId) => __awaiter(void 0, void 0, void 0, funct
     return measure;
 });
 exports.getSpecificBallotMeasure = (measureId) => __awaiter(void 0, void 0, void 0, function* () {
-    const response = yield axios_1.default.get(`http://api.votesmart.org/Measure.getMeasure?key=${String(process.env.VOTE_SMART_API_KEY)}&o=JSON&measureId=${measureId}`);
-    const { title, electionDate, summary, summaryUrl } = response.data.measure;
-    const dataToReturn = {
+    const { data: { measure: { title, electionDate, summary, summaryUrl }, }, } = yield voteSmartEndpoint_1.default.get('/Measure.getMeasure', {
+        params: {
+            measureId,
+        },
+    });
+    return {
         title,
         electionDate,
         summary,
         summaryUrl,
     };
-    return dataToReturn;
 });

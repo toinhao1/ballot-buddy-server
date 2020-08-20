@@ -122,18 +122,20 @@ export const getBallotMeasures = async (stateId: string): Promise<any> => {
 };
 
 export const getSpecificBallotMeasure = async (measureId: string | number): Promise<any> => {
-	const response = await axios.get(
-		`http://api.votesmart.org/Measure.getMeasure?key=${String(
-			process.env.VOTE_SMART_API_KEY
-		)}&o=JSON&measureId=${measureId}`
-	);
-	const { title, electionDate, summary, summaryUrl } = response.data.measure;
-	const dataToReturn = {
+	const {
+		data: {
+			measure: { title, electionDate, summary, summaryUrl },
+		},
+	} = await voteSmartEndpoint.get('/Measure.getMeasure', {
+		params: {
+			measureId,
+		},
+	});
+
+	return {
 		title,
 		electionDate,
 		summary,
 		summaryUrl,
 	};
-
-	return dataToReturn;
 };

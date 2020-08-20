@@ -58,8 +58,16 @@ exports.getRepDetailedBio = (candidateId) => __awaiter(void 0, void 0, void 0, f
     return extractedData;
 });
 exports.getCandidateOfficeData = (candidateId) => __awaiter(void 0, void 0, void 0, function* () {
-    const firstRes = yield axios_1.default.get(`http://api.votesmart.org/Address.getCampaign?key=${String(process.env.VOTE_SMART_API_KEY)}&o=JSON&candidateId=${candidateId}`);
-    const secondRes = yield axios_1.default.get(`http://api.votesmart.org/Address.getCampaignWebAddress?key=${String(process.env.VOTE_SMART_API_KEY)}&o=JSON&candidateId=${candidateId}`);
+    const firstRes = yield voteSmartEndpoint_1.default.get('/Address.getCampaign', {
+        params: {
+            candidateId,
+        },
+    });
+    const { data } = yield voteSmartEndpoint_1.default.get('/Address.getCampaignWebAddress', {
+        params: {
+            candidateId,
+        },
+    });
     let firstExtractedData = {};
     if (firstRes.data.error) {
         firstExtractedData = {};
@@ -70,12 +78,7 @@ exports.getCandidateOfficeData = (candidateId) => __awaiter(void 0, void 0, void
     else {
         firstExtractedData = firstRes.data.address;
     }
-    // let correctWebAddress: any = {}
-    // if (!Array.isArray(secondRes.data.webaddress.address)) {
-    //   correctWebAddress["webaddress"]["address"] = [secondRes.data.webaddress.address]
-    // }
-    const secondExtractedData = secondRes.data;
-    return Object.assign(Object.assign({}, firstExtractedData), secondExtractedData);
+    return Object.assign(Object.assign({}, firstExtractedData), data);
 });
 exports.getRepsForBallot = (zip5, zip4) => __awaiter(void 0, void 0, void 0, function* () {
     const response = yield axios_1.default.get(`https://votesmart.org/x/search?s=${zip5}${zip4}`);

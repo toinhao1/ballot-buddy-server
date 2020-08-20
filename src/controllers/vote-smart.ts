@@ -10,17 +10,17 @@ export const getCurrentRepresentatives = async (zip5: string, zip4: string): Pro
 };
 
 export const getRepOfficeData = async (candidateId: string): Promise<any> => {
-	const firstRes = await axios.get(
-		`http://api.votesmart.org/Address.getOffice?key=${String(
-			process.env.VOTE_SMART_API_KEY
-		)}&o=JSON&candidateId=${candidateId}`
-	);
+	const firstRes = await voteSmartEndpoint.get('/Address.getOffice', {
+		params: {
+			candidateId,
+		},
+	});
 
-	const secondRes = await axios.get(
-		`http://api.votesmart.org/Address.getOfficeWebAddress?key=${String(
-			process.env.VOTE_SMART_API_KEY
-		)}&o=JSON&candidateId=${candidateId}`
-	);
+	const secondRes = await voteSmartEndpoint.get('/Address.getOfficeWebAddress', {
+		params: {
+			candidateId,
+		},
+	});
 
 	let firstExtractedData: any = {};
 	if (firstRes.data.error) {

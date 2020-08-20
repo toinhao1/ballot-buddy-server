@@ -14,14 +14,23 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.getSpecificBallotMeasure = exports.getBallotMeasures = exports.getRepsForBallot = exports.getCandidateOfficeData = exports.getRepDetailedBio = exports.getRepOfficeData = exports.getCurrentRepresentatives = void 0;
 const axios_1 = __importDefault(require("axios"));
+const voteSmartEndpoint_1 = __importDefault(require("../config/voteSmartEndpoint"));
 exports.getCurrentRepresentatives = (zip5, zip4) => __awaiter(void 0, void 0, void 0, function* () {
     const response = yield axios_1.default.get(`https://votesmart.org/x/search?s=${zip5}${zip4}`);
     const currentReps = response.data.results.filter((rep) => rep.incumbent === true);
     return currentReps;
 });
 exports.getRepOfficeData = (candidateId) => __awaiter(void 0, void 0, void 0, function* () {
-    const firstRes = yield axios_1.default.get(`http://api.votesmart.org/Address.getOffice?key=${String(process.env.VOTE_SMART_API_KEY)}&o=JSON&candidateId=${candidateId}`);
-    const secondRes = yield axios_1.default.get(`http://api.votesmart.org/Address.getOfficeWebAddress?key=${String(process.env.VOTE_SMART_API_KEY)}&o=JSON&candidateId=${candidateId}`);
+    const firstRes = yield voteSmartEndpoint_1.default.get('/Address.getOffice', {
+        params: {
+            candidateId,
+        },
+    });
+    const secondRes = yield voteSmartEndpoint_1.default.get('/Address.getOfficeWebAddress', {
+        params: {
+            candidateId,
+        },
+    });
     let firstExtractedData = {};
     if (firstRes.data.error) {
         firstExtractedData = {};

@@ -1,4 +1,5 @@
 import axios from 'axios';
+import voteSmartEndpoint from '../config/voteSmartEndpoint';
 
 export const getCurrentRepresentatives = async (zip5: string, zip4: string): Promise<any> => {
 	const response = await axios.get(`https://votesmart.org/x/search?s=${zip5}${zip4}`);

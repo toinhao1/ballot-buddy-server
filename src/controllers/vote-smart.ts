@@ -36,15 +36,19 @@ export const getRepOfficeData = async (candidateId: string): Promise<any> => {
 };
 
 export const getRepDetailedBio = async (candidateId: string): Promise<any> => {
-	const response = await axios.get(
-		`http://api.votesmart.org/CandidateBio.getDetailedBio?key=${String(
-			process.env.VOTE_SMART_API_KEY
-		)}&o=JSON&candidateId=${candidateId}`
-	);
+	const {
+		data: {
+			bio: { candidate },
+		},
+	} = await voteSmartEndpoint.get('/CandidateBio.getDetailedBio', {
+		params: {
+			candidateId,
+		},
+	});
 
 	const extractedData = {
-		professional: response.data.bio?.candidate.profession,
-		political: response.data.bio?.candidate.political,
+		professional: candidate.profession,
+		political: candidate.political,
 		candidateId: candidateId,
 	};
 

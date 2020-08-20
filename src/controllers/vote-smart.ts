@@ -1,4 +1,5 @@
 import axios from 'axios';
+import voteSmartEndpoint from '../config/voteSmartEndpoint';
 
 export const getCurrentRepresentatives = async (zip5: string, zip4: string): Promise<any> => {
 	const response = await axios.get(`https://votesmart.org/x/search?s=${zip5}${zip4}`);
@@ -9,17 +10,17 @@ export const getCurrentRepresentatives = async (zip5: string, zip4: string): Pro
 };
 
 export const getRepOfficeData = async (candidateId: string): Promise<any> => {
-	const firstRes = await axios.get(
-		`http://api.votesmart.org/Address.getOffice?key=${String(
-			process.env.VOTE_SMART_API_KEY
-		)}&o=JSON&candidateId=${candidateId}`
-	);
+	const firstRes = await voteSmartEndpoint.get('/Address.getOffice', {
+		params: {
+			candidateId,
+		},
+	});
 
-	const secondRes = await axios.get(
-		`http://api.votesmart.org/Address.getOfficeWebAddress?key=${String(
-			process.env.VOTE_SMART_API_KEY
-		)}&o=JSON&candidateId=${candidateId}`
-	);
+	const secondRes = await voteSmartEndpoint.get('/Address.getOfficeWebAddress', {
+		params: {
+			candidateId,
+		},
+	});
 
 	let firstExtractedData: any = {};
 	if (firstRes.data.error) {
@@ -35,15 +36,19 @@ export const getRepOfficeData = async (candidateId: string): Promise<any> => {
 };
 
 export const getRepDetailedBio = async (candidateId: string): Promise<any> => {
-	const response = await axios.get(
-		`http://api.votesmart.org/CandidateBio.getDetailedBio?key=${String(
-			process.env.VOTE_SMART_API_KEY
-		)}&o=JSON&candidateId=${candidateId}`
-	);
+	const {
+		data: {
+			bio: { candidate },
+		},
+	} = await voteSmartEndpoint.get('/CandidateBio.getDetailedBio', {
+		params: {
+			candidateId,
+		},
+	});
 
 	const extractedData = {
-		professional: response.data.bio?.candidate.profession,
-		political: response.data.bio?.candidate.political,
+		professional: candidate.profession,
+		political: candidate.political,
 		candidateId: candidateId,
 	};
 
@@ -51,17 +56,17 @@ export const getRepDetailedBio = async (candidateId: string): Promise<any> => {
 };
 
 export const getCandidateOfficeData = async (candidateId: string): Promise<any> => {
-	const firstRes = await axios.get(
-		`http://api.votesmart.org/Address.getCampaign?key=${String(
-			process.env.VOTE_SMART_API_KEY
-		)}&o=JSON&candidateId=${candidateId}`
-	);
+	const firstRes = await voteSmartEndpoint.get('/Address.getCampaign', {
+		params: {
+			candidateId,
+		},
+	});
 
-	const secondRes = await axios.get(
-		`http://api.votesmart.org/Address.getCampaignWebAddress?key=${String(
-			process.env.VOTE_SMART_API_KEY
-		)}&o=JSON&candidateId=${candidateId}`
-	);
+	const { data } = await voteSmartEndpoint.get('/Address.getCampaignWebAddress', {
+		params: {
+			candidateId,
+		},
+	});
 
 	let firstExtractedData: any = {};
 	if (firstRes.data.error) {
@@ -71,19 +76,16 @@ export const getCandidateOfficeData = async (candidateId: string): Promise<any> 
 	} else {
 		firstExtractedData = firstRes.data.address;
 	}
-	// let correctWebAddress: any = {}
-	// if (!Array.isArray(secondRes.data.webaddress.address)) {
-	//   correctWebAddress["webaddress"]["address"] = [secondRes.data.webaddress.address]
-	// }
-	const secondExtractedData = secondRes.data;
 
-	return { ...firstExtractedData, ...secondExtractedData };
+	return { ...firstExtractedData, ...data };
 };
 
 export const getRepsForBallot = async (zip5: string, zip4: string): Promise<any> => {
-	const response = await axios.get(`https://votesmart.org/x/search?s=${zip5}${zip4}`);
+	const {
+		data: { results },
+	} = await axios.get(`https://votesmart.org/x/search?s=${zip5}${zip4}`);
 
-	const currentReps = response.data.results.filter(
+	const currentReps = results.filter(
 		(rep: any) =>
 			rep.electioncandidatestatus === 'Running' || rep.electioncandidatestatus === 'Announced'
 	);
@@ -105,28 +107,35 @@ export const getRepsForBallot = async (zip5: string, zip4: string): Promise<any>
 };
 
 export const getBallotMeasures = async (stateId: string): Promise<any> => {
-	const response = await axios.get(
-		`http://api.votesmart.org/Measure.getMeasuresByYearState?key=${String(
-			process.env.VOTE_SMART_API_KEY
-		)}&o=JSON&year=${new Date().getFullYear()}&stateId=${stateId}`
-	);
+	const {
+		data: {
+			measures: { measure },
+		},
+	} = await voteSmartEndpoint.get('/Measure.getMeasuresByYearState', {
+		params: {
+			stateId,
+			year: new Date().getFullYear(),
+		},
+	});
 
-	return response.data.measures.measure;
+	return measure;
 };
 
 export const getSpecificBallotMeasure = async (measureId: string | number): Promise<any> => {
-	const response = await axios.get(
-		`http://api.votesmart.org/Measure.getMeasure?key=${String(
-			process.env.VOTE_SMART_API_KEY
-		)}&o=JSON&measureId=${measureId}`
-	);
-	const { title, electionDate, summary, summaryUrl } = response.data.measure;
-	const dataToReturn = {
+	const {
+		data: {
+			measure: { title, electionDate, summary, summaryUrl },
+		},
+	} = await voteSmartEndpoint.get('/Measure.getMeasure', {
+		params: {
+			measureId,
+		},
+	});
+
+	return {
 		title,
 		electionDate,
 		summary,
 		summaryUrl,
 	};
-
-	return dataToReturn;
 };

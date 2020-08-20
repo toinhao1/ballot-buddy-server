@@ -81,8 +81,8 @@ exports.getCandidateOfficeData = (candidateId) => __awaiter(void 0, void 0, void
     return Object.assign(Object.assign({}, firstExtractedData), data);
 });
 exports.getRepsForBallot = (zip5, zip4) => __awaiter(void 0, void 0, void 0, function* () {
-    const response = yield axios_1.default.get(`https://votesmart.org/x/search?s=${zip5}${zip4}`);
-    const currentReps = response.data.results.filter((rep) => rep.electioncandidatestatus === 'Running' || rep.electioncandidatestatus === 'Announced');
+    const { data: { results }, } = yield axios_1.default.get(`https://votesmart.org/x/search?s=${zip5}${zip4}`);
+    const currentReps = results.filter((rep) => rep.electioncandidatestatus === 'Running' || rep.electioncandidatestatus === 'Announced');
     let ballotObject = {};
     currentReps.forEach((rep) => {
         let repArray = [];
@@ -98,8 +98,13 @@ exports.getRepsForBallot = (zip5, zip4) => __awaiter(void 0, void 0, void 0, fun
     return ballotObject;
 });
 exports.getBallotMeasures = (stateId) => __awaiter(void 0, void 0, void 0, function* () {
-    const response = yield axios_1.default.get(`http://api.votesmart.org/Measure.getMeasuresByYearState?key=${String(process.env.VOTE_SMART_API_KEY)}&o=JSON&year=${new Date().getFullYear()}&stateId=${stateId}`);
-    return response.data.measures.measure;
+    const { data: { measures: { measure }, }, } = yield voteSmartEndpoint_1.default.get('/Measure.getMeasuresByYearState', {
+        params: {
+            stateId,
+            year: new Date().getFullYear(),
+        },
+    });
+    return measure;
 });
 exports.getSpecificBallotMeasure = (measureId) => __awaiter(void 0, void 0, void 0, function* () {
     const response = yield axios_1.default.get(`http://api.votesmart.org/Measure.getMeasure?key=${String(process.env.VOTE_SMART_API_KEY)}&o=JSON&measureId=${measureId}`);

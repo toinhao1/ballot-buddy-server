@@ -81,9 +81,11 @@ export const getCandidateOfficeData = async (candidateId: string): Promise<any> 
 };
 
 export const getRepsForBallot = async (zip5: string, zip4: string): Promise<any> => {
-	const response = await axios.get(`https://votesmart.org/x/search?s=${zip5}${zip4}`);
+	const {
+		data: { results },
+	} = await axios.get(`https://votesmart.org/x/search?s=${zip5}${zip4}`);
 
-	const currentReps = response.data.results.filter(
+	const currentReps = results.filter(
 		(rep: any) =>
 			rep.electioncandidatestatus === 'Running' || rep.electioncandidatestatus === 'Announced'
 	);
@@ -105,13 +107,18 @@ export const getRepsForBallot = async (zip5: string, zip4: string): Promise<any>
 };
 
 export const getBallotMeasures = async (stateId: string): Promise<any> => {
-	const response = await axios.get(
-		`http://api.votesmart.org/Measure.getMeasuresByYearState?key=${String(
-			process.env.VOTE_SMART_API_KEY
-		)}&o=JSON&year=${new Date().getFullYear()}&stateId=${stateId}`
-	);
+	const {
+		data: {
+			measures: { measure },
+		},
+	} = await voteSmartEndpoint.get('/Measure.getMeasuresByYearState', {
+		params: {
+			stateId,
+			year: new Date().getFullYear(),
+		},
+	});
 
-	return response.data.measures.measure;
+	return measure;
 };
 
 export const getSpecificBallotMeasure = async (measureId: string | number): Promise<any> => {

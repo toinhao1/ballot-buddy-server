@@ -12,7 +12,6 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.getNewsForRepresentative = void 0;
 const axios_1 = __importDefault(require("axios"));
 exports.getNewsForRepresentative = (repData) => __awaiter(void 0, void 0, void 0, function* () {
     const response = yield axios_1.default.get(`https://gnews.io/api/v3/search?q=${repData.firstName}+${repData.lastName}+${repData.office}&lang=en&token=${String(process.env.GNEWS_API_KEY)}`);

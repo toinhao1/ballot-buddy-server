@@ -12,7 +12,6 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.getSpecificBallotMeasure = exports.getBallotMeasures = exports.getRepsForBallot = exports.getCandidateOfficeData = exports.getRepDetailedBio = exports.getRepOfficeData = exports.getCurrentRepresentatives = void 0;
 const axios_1 = __importDefault(require("axios"));
 const voteSmartEndpoint_1 = __importDefault(require("../config/voteSmartEndpoint"));
 exports.getCurrentRepresentatives = (zip5, zip4) => __awaiter(void 0, void 0, void 0, function* () {

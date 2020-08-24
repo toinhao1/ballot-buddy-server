@@ -1,6 +1,5 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.statesToIgnore = void 0;
 exports.statesToIgnore = {
     AL: true,
     CT: true,

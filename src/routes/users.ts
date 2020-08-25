@@ -36,12 +36,11 @@ userRouter.post(
 userRouter.post(
 	'/login',
 	async (req: Request, res: Response): Promise<any> => {
-		const email: string = req.body.email;
-		const password: string = req.body.password;
+		const { email, password } = req.body;
 		try {
 			const user = await User.findOne({ email: email });
 			if (!user) {
-				return res.send({ status: 400, error: 'Email not found.' });
+				return res.status(400).send({ error: 'Email not found.' });
 			}
 			const isMatch = await compare(password, user.password);
 			if (isMatch) {
@@ -55,7 +54,7 @@ userRouter.post(
 					address: user.address,
 				});
 			} else {
-				return res.status(400).send({ message: 'Incorrect password' });
+				res.status(400).send({ error: 'Incorrect password' });
 			}
 		} catch (err) {
 			res.status(500).send({ message: err });

@@ -37,12 +37,11 @@ userRouter.post('/sign-up', (req, res) => __awaiter(void 0, void 0, void 0, func
 }));
 // route to sign in
 userRouter.post('/login', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    const email = req.body.email;
-    const password = req.body.password;
+    const { email, password } = req.body;
     try {
         const user = yield models_1.User.findOne({ email: email });
         if (!user) {
-            return res.send({ status: 400, error: 'Email not found.' });
+            return res.status(400).send({ error: 'Email not found.' });
         }
         const isMatch = yield bcrypt_1.compare(password, user.password);
         if (isMatch) {
@@ -57,7 +56,7 @@ userRouter.post('/login', (req, res) => __awaiter(void 0, void 0, void 0, functi
             });
         }
         else {
-            return res.status(400).send({ message: 'Incorrect password' });
+            res.status(400).send({ error: 'Incorrect password' });
         }
     }
     catch (err) {

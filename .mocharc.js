@@ -1,7 +1,7 @@
 // process.env.NODE_ENV = 'test';
 
 module.exports = {
-	timeout: 200000,
+	timeout: 20000,
 	bail: false,
 	exit: true,
 	delay: false,

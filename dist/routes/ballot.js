@@ -65,4 +65,4 @@ ballotRouter.post('/selected-measure', passport_1.authenticate('jwt', { session:
         res.status(400).send({ message: 'There was an error!' });
     }
 }));
-exports.default = ballotRouter;
+exports.ballots = ballotRouter;

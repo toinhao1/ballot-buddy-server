@@ -147,4 +147,4 @@ representativeRouter.post('/current-representative/office-data', passport_1.auth
         res.send({ message: 'You must sign in to request this.' });
     }
 }));
-exports.default = representativeRouter;
+exports.reps = representativeRouter;

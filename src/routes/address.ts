@@ -49,4 +49,4 @@ addressRouter.post(
 	}
 );
 
-export default addressRouter;
+export const address = addressRouter;

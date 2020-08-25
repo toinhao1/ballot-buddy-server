@@ -164,4 +164,4 @@ representativeRouter.post(
 	}
 );
 
-export default representativeRouter;
+export const reps = representativeRouter;

@@ -12,23 +12,23 @@ const morgan_1 = __importDefault(require("morgan"));
 const cors_1 = __importDefault(require("cors"));
 const passport_1 = __importDefault(require("passport"));
 const routes_1 = require("./routes");
-const dbURL = `${String(process.env.MONGODB_URL)}`;
-if (process.env.NODE_ENV !== 'test') {
-    // Connect to DB
-    mongoose_1.default
-        .connect(dbURL, {
-        useNewUrlParser: true,
-        useCreateIndex: true,
-        useFindAndModify: false,
-        useUnifiedTopology: true,
-    })
-        .then(() => {
-        console.log('MongoDB Connected');
-    })
-        .catch((err) => {
-        console.log(err);
-    });
-}
+const dbURL = process.env.NODE_ENV === 'test'
+    ? String(process.env.MONGODB_LOCAL_URL)
+    : `${String(process.env.MONGODB_URL)}`;
+// Connect to DB
+mongoose_1.default
+    .connect(dbURL, {
+    useNewUrlParser: true,
+    useCreateIndex: true,
+    useFindAndModify: false,
+    useUnifiedTopology: true,
+})
+    .then(() => {
+    console.log('MongoDB Connected');
+})
+    .catch((err) => {
+    console.log(err);
+});
 const app = express_1.default();
 //Body parser middleware
 app.use(body_parser_1.default.json());

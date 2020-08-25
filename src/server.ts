@@ -9,24 +9,25 @@ import passport from 'passport';
 
 import { users, address, reps, ballots } from './routes';
 
-const dbURL: string = `${String(process.env.MONGODB_URL)}`;
+const dbURL: string =
+	process.env.NODE_ENV === 'test'
+		? String(process.env.MONGODB_LOCAL_URL)
+		: `${String(process.env.MONGODB_URL)}`;
 
-if (process.env.NODE_ENV !== 'test') {
-	// Connect to DB
-	mongoose
-		.connect(dbURL, {
-			useNewUrlParser: true,
-			useCreateIndex: true,
-			useFindAndModify: false,
-			useUnifiedTopology: true,
-		})
-		.then(() => {
-			console.log('MongoDB Connected');
-		})
-		.catch((err) => {
-			console.log(err);
-		});
-}
+// Connect to DB
+mongoose
+	.connect(dbURL, {
+		useNewUrlParser: true,
+		useCreateIndex: true,
+		useFindAndModify: false,
+		useUnifiedTopology: true,
+	})
+	.then(() => {
+		console.log('MongoDB Connected');
+	})
+	.catch((err) => {
+		console.log(err);
+	});
 
 const app: express.Application = express();
 

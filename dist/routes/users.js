@@ -17,8 +17,7 @@ const models_1 = require("../models");
 const userRouter = express_1.Router();
 // route to SignUp a new user
 userRouter.post('/sign-up', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    const email = req.body.email;
-    const password = req.body.password;
+    const { email, password } = req.body;
     try {
         const userAlreadyExists = yield models_1.User.findOne({ email: email });
         if (userAlreadyExists) {

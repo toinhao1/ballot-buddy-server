@@ -11,8 +11,7 @@ const userRouter = Router();
 userRouter.post(
 	'/sign-up',
 	async (req: Request, res: Response): Promise<any> => {
-		const email = req.body.email;
-		const password = req.body.password;
+		const { email, password } = req.body;
 		try {
 			const userAlreadyExists = await User.findOne({ email: email });
 

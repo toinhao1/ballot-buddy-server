@@ -114,4 +114,4 @@ userRouter.put('/edit-user', passport_1.authenticate('jwt', { session: false }),
         res.send('Please login!');
     }
 }));
-exports.default = userRouter;
+exports.users = userRouter;

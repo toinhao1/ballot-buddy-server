@@ -130,4 +130,4 @@ userRouter.put(
 	}
 );
 
-export default userRouter;
+export const users = userRouter;

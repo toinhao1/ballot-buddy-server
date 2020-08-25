@@ -7,29 +7,26 @@ import logger from 'morgan';
 import cors from 'cors';
 import passport from 'passport';
 
-import userRouter from './routes/users';
-import addressRouter from './routes/address';
-import representativeRouter from './routes/representatives';
-import ballotRouter from './routes/ballot';
+import { users, address, reps, ballots } from './routes';
 
 const dbURL: string = `${String(process.env.MONGODB_URL)}`;
 
-// if (process.env.NODE_ENV !== 'test') {
-// 	// Connect to DB
-// 	mongoose
-// 		.connect(dbURL, {
-// 			useNewUrlParser: true,
-// 			useCreateIndex: true,
-// 			useFindAndModify: false,
-// 			useUnifiedTopology: true,
-// 		})
-// 		.then(() => {
-// 			console.log('MongoDB Connected');
-// 		})
-// 		.catch((err) => {
-// 			console.log(err);
-// 		});
-// }
+if (process.env.NODE_ENV !== 'test') {
+	// Connect to DB
+	mongoose
+		.connect(dbURL, {
+			useNewUrlParser: true,
+			useCreateIndex: true,
+			useFindAndModify: false,
+			useUnifiedTopology: true,
+		})
+		.then(() => {
+			console.log('MongoDB Connected');
+		})
+		.catch((err) => {
+			console.log(err);
+		});
+}
 
 const app: express.Application = express();
 
@@ -48,10 +45,10 @@ app.use(cors());
 app.use(logger('combined'));
 
 // routes for all user based functionality
-app.use(addressRouter);
-app.use(userRouter);
-app.use(representativeRouter);
-app.use(ballotRouter);
+app.use(address);
+app.use(users);
+app.use(reps);
+app.use(ballots);
 
 const port = Number(process.env.PORT) || 5000;
 app.listen(port, () => console.log(`Server is listening on ${port}`));

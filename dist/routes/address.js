@@ -49,4 +49,4 @@ addressRouter.post('/set-address', passport_1.authenticate('jwt', { session: fal
         });
     }
 }));
-exports.default = addressRouter;
+exports.address = addressRouter;

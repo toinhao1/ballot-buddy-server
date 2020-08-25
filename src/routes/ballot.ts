@@ -70,4 +70,4 @@ ballotRouter.post(
 	}
 );
 
-export default ballotRouter;
+export const ballots = ballotRouter;

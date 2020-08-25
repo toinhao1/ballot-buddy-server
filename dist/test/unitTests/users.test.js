@@ -27,19 +27,45 @@ describe('Testing all auth routes.', function () {
         });
         done();
     });
-    it('try to sign up with no input.', function () {
-        return requester.post('/sign-up').then((res) => {
-            chai_1.expect(res).to.have.status(500);
+    describe('POST /sign-up', function () {
+        it('try to sign up with no input.', function () {
+            return requester.post('/sign-up').then((res) => {
+                chai_1.expect(res).to.have.status(500);
+            });
         });
-    });
-    it('try to sign up with correct input.', function () {
-        return requester
-            .post('/sign-up')
-            .send({ email: 'tester@testers.com', password: 'password' })
-            .then((res) => {
-            createdUserId = res.body._id;
-            chai_1.expect(res.body._id).to.not.be.null;
-            chai_1.expect(res).to.have.status(201);
+        it('try to sign up with only one input.', function () {
+            return requester
+                .post('/sign-up')
+                .send({ email: 'tester@testers.com' })
+                .then((res) => {
+                chai_1.expect(res).to.have.status(500);
+            });
+        });
+        it('try to sign up with only one input.', function () {
+            return requester
+                .post('/sign-up')
+                .send({ password: 'password' })
+                .then((res) => {
+                chai_1.expect(res).to.have.status(500);
+            });
+        });
+        it('try to sign up with correct input.', function () {
+            return requester
+                .post('/sign-up')
+                .send({ email: 'tester@testers.com', password: 'password' })
+                .then((res) => {
+                createdUserId = res.body._id;
+                chai_1.expect(res.body._id).to.not.be.null;
+                chai_1.expect(res).to.have.status(201);
+            });
+        });
+        it('try to sign up with credentials that are already in use.', function () {
+            return requester
+                .post('/sign-up')
+                .send({ email: 'tester@testers.com', password: 'password' })
+                .then((res) => {
+                chai_1.expect(res).to.have.status(400);
+            });
         });
     });
 });

@@ -14,12 +14,11 @@ const chai_1 = __importStar(require("chai"));
 const chai_http_1 = __importDefault(require("chai-http"));
 const server_1 = __importDefault(require("../../server"));
 const models_1 = require("../../models");
+const userData_1 = require("../helpers/userData");
 chai_1.default.use(chai_http_1.default);
 const requester = chai_1.default.request(server_1.default).keepOpen();
 let createdUserId = '';
 let userToken = '';
-const userEmail = 'tester@testers.com';
-const userPassword = 'password';
 describe('Testing all auth routes.', function () {
     before('Open everything', function () {
         // return mongoose.createConnection(String(process.env.))
@@ -39,7 +38,7 @@ describe('Testing all auth routes.', function () {
         it('try to sign up with only one input.', function () {
             return requester
                 .post('/sign-up')
-                .send({ email: userEmail })
+                .send({ email: userData_1.userEmail })
                 .then((res) => {
                 chai_1.expect(res).to.have.status(500);
             });
@@ -47,7 +46,7 @@ describe('Testing all auth routes.', function () {
         it('try to sign up with only one input.', function () {
             return requester
                 .post('/sign-up')
-                .send({ password: userPassword })
+                .send({ password: userData_1.userPassword })
                 .then((res) => {
                 chai_1.expect(res).to.have.status(500);
             });
@@ -55,7 +54,7 @@ describe('Testing all auth routes.', function () {
         it('try to sign up with correct input.', function () {
             return requester
                 .post('/sign-up')
-                .send({ email: userEmail, password: userPassword })
+                .send({ email: userData_1.userEmail, password: userData_1.userPassword })
                 .then((res) => {
                 createdUserId = res.body._id;
                 chai_1.expect(res.body._id).to.not.be.null;
@@ -65,7 +64,7 @@ describe('Testing all auth routes.', function () {
         it('try to sign up with credentials that are already in use.', function () {
             return requester
                 .post('/sign-up')
-                .send({ email: userEmail, password: userPassword })
+                .send({ email: userData_1.userEmail, password: userData_1.userPassword })
                 .then((res) => {
                 chai_1.expect(res).to.have.status(400);
             });
@@ -75,7 +74,7 @@ describe('Testing all auth routes.', function () {
         it('should login a user with valid credentials.', function () {
             return requester
                 .post('/login')
-                .send({ email: userEmail, password: userPassword })
+                .send({ email: userData_1.userEmail, password: userData_1.userPassword })
                 .then((res) => {
                 userToken = `Bearer ${res.body.token}`;
                 chai_1.expect(res.body.token).to.not.be.null;
@@ -85,7 +84,7 @@ describe('Testing all auth routes.', function () {
         it('should not login a user with an invalid email.', function () {
             return requester
                 .post('/login')
-                .send({ email: 'jdskjdf', password: userPassword })
+                .send({ email: 'jdskjdf', password: userData_1.userPassword })
                 .then((res) => {
                 chai_1.expect(res.body.error).to.equal('Email not found.');
                 chai_1.expect(res).to.have.status(400);
@@ -94,7 +93,7 @@ describe('Testing all auth routes.', function () {
         it('should not login a user with an invalid password.', function () {
             return requester
                 .post('/login')
-                .send({ email: userEmail, password: 'userPassword' })
+                .send({ email: userData_1.userEmail, password: 'userPassword' })
                 .then((res) => {
                 chai_1.expect(res.body.error).to.equal('Incorrect password');
                 chai_1.expect(res).to.have.status(400);

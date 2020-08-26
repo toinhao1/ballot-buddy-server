@@ -1,16 +1,15 @@
 import chai, { expect } from 'chai';
 import chaiHttp from 'chai-http';
+
 import app from '../../server';
 import { User } from '../../models';
+import { userEmail, userPassword } from '../helpers/userData';
 
 chai.use(chaiHttp);
 const requester = chai.request(app).keepOpen();
 
 let createdUserId = '';
 let userToken = '';
-
-const userEmail = 'tester@testers.com';
-const userPassword = 'password';
 
 describe('Testing all auth routes.', function () {
 	before('Open everything', function () {

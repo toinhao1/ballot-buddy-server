@@ -67,9 +67,10 @@ userRouter.put(
 	'/update',
 	authenticate('jwt', { session: false }),
 	async (req: Request, res: Response): Promise<void> => {
-		if (req.user) {
+		const { email } = req.body;
+		if (email) {
 			const updates = {
-				email: req.body.email,
+				email: email,
 			};
 			try {
 				let updatedUser: IUser | null = await User.findOneAndUpdate(
@@ -78,12 +79,12 @@ userRouter.put(
 					{ new: true }
 				);
 				await updatedUser?.save();
-				res.json(updatedUser);
+				res.status(201).send({ updatedUser });
 			} catch (err) {
-				res.send(err);
+				res.status(500).send(err);
 			}
 		} else {
-			res.status(400).send({ message: 'Please sign in to update your email' });
+			res.status(404).send({ error: 'Please provide an email to update.' });
 		}
 	}
 );

@@ -81,6 +81,7 @@ userRouter.put(
 				await updatedUser?.save();
 				res.status(201).send({ updatedUser });
 			} catch (err) {
+				console.log(err);
 				res.status(500).send(err);
 			}
 		} else {

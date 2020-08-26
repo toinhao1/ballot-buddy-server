@@ -65,21 +65,22 @@ userRouter.post('/login', (req, res) => __awaiter(void 0, void 0, void 0, functi
 }));
 // update the user email
 userRouter.put('/update', passport_1.authenticate('jwt', { session: false }), (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    if (req.user) {
+    const { email } = req.body;
+    if (email) {
         const updates = {
-            email: req.body.email,
+            email: email,
         };
         try {
             let updatedUser = yield models_1.User.findOneAndUpdate({ _id: req.user._id }, { $set: updates }, { new: true });
             yield (updatedUser === null || updatedUser === void 0 ? void 0 : updatedUser.save());
-            res.json(updatedUser);
+            res.status(201).send({ updatedUser });
         }
         catch (err) {
-            res.send(err);
+            res.status(500).send(err);
         }
     }
     else {
-        res.status(400).send({ message: 'Please sign in to update your email' });
+        res.status(404).send({ error: 'Please provide an email to update.' });
     }
 }));
 userRouter.get('/user-profile', passport_1.authenticate('jwt', { session: false }), (req, res) => __awaiter(void 0, void 0, void 0, function* () {

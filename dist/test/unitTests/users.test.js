@@ -17,6 +17,7 @@ const models_1 = require("../../models");
 chai_1.default.use(chai_http_1.default);
 const requester = chai_1.default.request(server_1.default).keepOpen();
 let createdUserId = '';
+let userToken = '';
 const userEmail = 'tester@testers.com';
 const userPassword = 'password';
 describe('Testing all auth routes.', function () {
@@ -76,6 +77,7 @@ describe('Testing all auth routes.', function () {
                 .post('/login')
                 .send({ email: userEmail, password: userPassword })
                 .then((res) => {
+                userToken = `Bearer ${res.body.token}`;
                 chai_1.expect(res.body.token).to.not.be.null;
                 chai_1.expect(res).to.have.status(200);
             });
@@ -96,6 +98,36 @@ describe('Testing all auth routes.', function () {
                 .then((res) => {
                 chai_1.expect(res.body.error).to.equal('Incorrect password');
                 chai_1.expect(res).to.have.status(400);
+            });
+        });
+    });
+    describe('PUT /update', function () {
+        it('should update a user correctly.', function () {
+            return requester
+                .put('/update')
+                .set('Authorization', userToken)
+                .send({ email: 'updated@email.com' })
+                .then((res) => {
+                chai_1.expect(res.body.updatedUser.email).to.equal('updated@email.com');
+                chai_1.expect(res).to.have.status(201);
+            });
+        });
+        it('should not update a user when no token provided.', function () {
+            return requester
+                .put('/update')
+                .set('Authorization', '43')
+                .send({ email: 'updated@email.com' })
+                .then((res) => {
+                chai_1.expect(res).to.have.status(401);
+            });
+        });
+        it('should not update a user when no email is provided', function () {
+            return requester
+                .put('/update')
+                .set('Authorization', userToken)
+                .send({ email: '' })
+                .then((res) => {
+                chai_1.expect(res).to.have.status(404);
             });
         });
     });

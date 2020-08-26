@@ -7,6 +7,7 @@ chai.use(chaiHttp);
 const requester = chai.request(app).keepOpen();
 
 let createdUserId = '';
+let userToken = '';
 
 const userEmail = 'tester@testers.com';
 const userPassword = 'password';
@@ -73,6 +74,7 @@ describe('Testing all auth routes.', function () {
 				.post('/login')
 				.send({ email: userEmail, password: userPassword })
 				.then((res) => {
+					userToken = `Bearer ${res.body.token}`;
 					expect(res.body.token).to.not.be.null;
 					expect(res).to.have.status(200);
 				});
@@ -95,6 +97,39 @@ describe('Testing all auth routes.', function () {
 				.then((res) => {
 					expect(res.body.error).to.equal('Incorrect password');
 					expect(res).to.have.status(400);
+				});
+		});
+	});
+
+	describe('PUT /update', function () {
+		it('should update a user correctly.', function () {
+			return requester
+				.put('/update')
+				.set('Authorization', userToken)
+				.send({ email: 'updated@email.com' })
+				.then((res) => {
+					expect(res.body.updatedUser.email).to.equal('updated@email.com');
+					expect(res).to.have.status(201);
+				});
+		});
+
+		it('should not update a user when no token provided.', function () {
+			return requester
+				.put('/update')
+				.set('Authorization', '43')
+				.send({ email: 'updated@email.com' })
+				.then((res) => {
+					expect(res).to.have.status(401);
+				});
+		});
+
+		it('should not update a user when no email is provided', function () {
+			return requester
+				.put('/update')
+				.set('Authorization', userToken)
+				.send({ email: '' })
+				.then((res) => {
+					expect(res).to.have.status(404);
 				});
 		});
 	});

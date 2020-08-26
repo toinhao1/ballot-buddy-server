@@ -76,6 +76,7 @@ userRouter.put('/update', passport_1.authenticate('jwt', { session: false }), (r
             res.status(201).send({ updatedUser });
         }
         catch (err) {
+            console.log(err);
             res.status(500).send(err);
         }
     }

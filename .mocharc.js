@@ -11,5 +11,7 @@ module.exports = {
 	require: 'ts-node/register/transpile-only',
 	extension: ['ts'],
 	watchExtensions: ['ts'],
+	// need to uncomment
+	// single test // "mocha src/test/integrationTests/users.test.ts"
 	spec: ['src/test/**/*.test.ts'],
 };

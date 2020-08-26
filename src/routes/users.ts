@@ -98,7 +98,7 @@ userRouter.get(
 				const user = await User.findOne({ _id: req.user._id });
 				res.status(200).send({ message: 'Here is your profile', user });
 			} catch (err) {
-				res.status(400).send(err);
+				res.status(500).send(err);
 			}
 		} else {
 			res.send('Please login!');

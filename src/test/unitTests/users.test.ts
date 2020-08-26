@@ -133,4 +133,16 @@ describe('Testing all auth routes.', function () {
 				});
 		});
 	});
+
+	describe('GET /user-profile', function () {
+		it('should return a users profile.', function () {
+			return requester
+				.get('/user-profile')
+				.set('Authorization', userToken)
+				.then((res) => {
+					expect(res.body.user.email).to.equal('updated@email.com');
+					expect(res).to.have.status(200);
+				});
+		});
+	});
 });

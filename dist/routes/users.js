@@ -90,7 +90,7 @@ userRouter.get('/user-profile', passport_1.authenticate('jwt', { session: false 
             res.status(200).send({ message: 'Here is your profile', user });
         }
         catch (err) {
-            res.status(400).send(err);
+            res.status(500).send(err);
         }
     }
     else {

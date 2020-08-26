@@ -131,4 +131,15 @@ describe('Testing all auth routes.', function () {
             });
         });
     });
+    describe('GET /user-profile', function () {
+        it('should return a users profile.', function () {
+            return requester
+                .get('/user-profile')
+                .set('Authorization', userToken)
+                .then((res) => {
+                chai_1.expect(res.body.user.email).to.equal('updated@email.com');
+                chai_1.expect(res).to.have.status(200);
+            });
+        });
+    });
 });

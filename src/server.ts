@@ -12,7 +12,7 @@ import { users, address, reps, ballots } from './routes';
 const dbURL: string =
 	process.env.NODE_ENV === 'test'
 		? String(process.env.MONGODB_LOCAL_URL)
-		: `${String(process.env.MONGODB_URL)}`;
+		: String(process.env.MONGODB_URL);
 
 // Connect to DB
 mongoose

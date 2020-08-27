@@ -31,7 +31,7 @@ representativeRouter.get('/current-representatives', passport_1.authenticate('jw
                 const data = yield vote_smart_1.getCurrentRepresentatives(zipcode, plusFourZip);
                 const repsToSave = new models_1.CurrentReps({ user: req.user.id, reps: data });
                 yield repsToSave.save();
-                res.status(200).send({ message: 'Here are your reps!', data });
+                res.status(201).send({ message: 'Here are your reps!', data });
             }
         }
         catch (err) {

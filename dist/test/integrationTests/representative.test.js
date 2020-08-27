@@ -28,7 +28,6 @@ const models_1 = require("../../models");
 chai_1.default.use(chai_http_1.default);
 const requester = chai_1.default.request(server_1.default).keepOpen();
 let currentUserToken = '';
-let repToDelete = '15723';
 describe('All rep integration tests.', function () {
     before('Open everything', function () {
         return __awaiter(this, void 0, void 0, function* () {
@@ -52,6 +51,16 @@ describe('All rep integration tests.', function () {
             chai_1.expect(res).to.have.status(201);
             const currentReps = yield models_1.CurrentReps.findOne({ user: seeds_1.userId });
             chai_1.expect(currentReps === null || currentReps === void 0 ? void 0 : currentReps.reps.length).to.be.greaterThan(1);
+        });
+    });
+    it('Should retrieve reps from DB.', function () {
+        return __awaiter(this, void 0, void 0, function* () {
+            const res = yield requester
+                .get('/current-representatives')
+                .set('Authorization', currentUserToken);
+            chai_1.expect(res.body.message).to.equal('Here are your reps!');
+            chai_1.expect(res.body.data.length).to.be.greaterThan(1);
+            chai_1.expect(res).to.have.status(200);
         });
     });
 });

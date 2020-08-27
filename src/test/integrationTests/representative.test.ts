@@ -10,7 +10,6 @@ chai.use(chaiHttp);
 const requester = chai.request(app).keepOpen();
 
 let currentUserToken = '';
-let repToDelete = '15723';
 
 describe('All rep integration tests.', function () {
 	before('Open everything', async function () {
@@ -37,5 +36,15 @@ describe('All rep integration tests.', function () {
 		const currentReps = await CurrentReps.findOne({ user: userId });
 
 		expect(currentReps?.reps.length).to.be.greaterThan(1);
+	});
+
+	it('Should retrieve reps from DB.', async function () {
+		const res = await requester
+			.get('/current-representatives')
+			.set('Authorization', currentUserToken);
+
+		expect(res.body.message).to.equal('Here are your reps!');
+		expect(res.body.data.length).to.be.greaterThan(1);
+		expect(res).to.have.status(200);
 	});
 });

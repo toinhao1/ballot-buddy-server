@@ -1,9 +1,6 @@
 import ChaiHttp from 'chai-http';
 import { internet } from 'faker';
 
-export const userEmail = 'tester@testers.com';
-export const userPassword = 'password';
-
 export const getOldUserToken = (requester: ChaiHttp.Agent): Promise<string> => {
 	return requester
 		.post('/login')

@@ -1,4 +1,13 @@
 "use strict";
+var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
+    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
+    return new (P || (P = Promise))(function (resolve, reject) {
+        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
+        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
+        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
+        step((generator = generator.apply(thisArg, _arguments || [])).next());
+    });
+};
 var __importStar = (this && this.__importStar) || function (mod) {
     if (mod && mod.__esModule) return mod;
     var result = {};
@@ -15,6 +24,7 @@ const chai_http_1 = __importDefault(require("chai-http"));
 const server_1 = __importDefault(require("../../server"));
 const models_1 = require("../../models");
 const userData_1 = require("../helpers/userData");
+const seeds_1 = require("../helpers/seeds");
 chai_1.default.use(chai_http_1.default);
 const requester = chai_1.default.request(server_1.default).keepOpen();
 let createdUserId = '';
@@ -22,7 +32,8 @@ let fakeUserId = '';
 let userToken = '';
 describe('All integrated user routes.', function () {
     before('Open everything', function () {
-        return userData_1.getNewUserToken(requester).then((token) => {
+        return __awaiter(this, void 0, void 0, function* () {
+            const token = yield userData_1.getNewUserToken(requester);
             userToken = token;
         });
     });
@@ -40,38 +51,32 @@ describe('All integrated user routes.', function () {
     });
     describe('Create a user and check the DB.', function () {
         it('Should create a user and then retrieve user from the DB.', function () {
-            return requester
-                .post('/sign-up')
-                .send({ email: userData_1.userEmail, password: userData_1.userPassword })
-                .then((res) => {
+            return __awaiter(this, void 0, void 0, function* () {
+                const res = yield requester
+                    .post('/sign-up')
+                    .send({ email: seeds_1.userEmail, password: seeds_1.userPassword });
                 createdUserId = res.body._id;
                 chai_1.expect(res).to.have.status(201);
-            })
-                .then(() => {
-                models_1.User.findOne({ _id: createdUserId }).then((user) => {
-                    if (user) {
-                        chai_1.expect(user.email).to.equal(userData_1.userEmail);
-                        chai_1.expect(user.id).to.equal(createdUserId);
-                    }
-                });
+                const user = yield models_1.User.findOne({ _id: createdUserId });
+                if (user) {
+                    chai_1.expect(user.email).to.equal(seeds_1.userEmail);
+                    chai_1.expect(user.id).to.equal(createdUserId);
+                }
             });
         });
         it('should update the user in the db and verify on the DB.', function () {
-            return requester
-                .put('/update')
-                .set('Authorization', userToken)
-                .send({ email: 'updated@email.com' })
-                .then((res) => {
+            return __awaiter(this, void 0, void 0, function* () {
+                const res = yield requester
+                    .put('/update')
+                    .set('Authorization', userToken)
+                    .send({ email: 'updated@email.com' });
                 fakeUserId = res.body.updatedUser._id;
                 chai_1.expect(res).to.have.status(201);
-            })
-                .then(() => {
-                models_1.User.findOne({ _id: fakeUserId }).then((user) => {
-                    if (user) {
-                        chai_1.expect(user.email).to.equal('updated@email.com');
-                        chai_1.expect(user.id).to.equal(fakeUserId);
-                    }
-                });
+                const user = yield models_1.User.findOne({ _id: fakeUserId });
+                if (user) {
+                    chai_1.expect(user.email).to.equal('updated@email.com');
+                    chai_1.expect(user.id).to.equal(fakeUserId);
+                }
             });
         });
     });

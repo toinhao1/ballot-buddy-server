@@ -3,7 +3,7 @@ import chaiHttp from 'chai-http';
 
 import app from '../../server';
 import { User } from '../../models';
-import { userEmail, userPassword } from '../helpers/userData';
+import { userEmail, userPassword } from '../helpers/seeds';
 
 chai.use(chaiHttp);
 const requester = chai.request(app).keepOpen();

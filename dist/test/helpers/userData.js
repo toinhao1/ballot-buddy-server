@@ -1,8 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 const faker_1 = require("faker");
-exports.userEmail = 'tester@testers.com';
-exports.userPassword = 'password';
 exports.getOldUserToken = (requester) => {
     return requester
         .post('/login')

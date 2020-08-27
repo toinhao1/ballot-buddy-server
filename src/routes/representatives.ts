@@ -33,7 +33,7 @@ representativeRouter.get(
 					const repsToSave = new CurrentReps({ user: req.user.id, reps: data });
 					await repsToSave.save();
 
-					res.status(200).send({ message: 'Here are your reps!', data });
+					res.status(201).send({ message: 'Here are your reps!', data });
 				}
 			} catch (err) {
 				res.status(400).send({ message: err });

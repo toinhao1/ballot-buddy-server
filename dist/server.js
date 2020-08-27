@@ -14,7 +14,7 @@ const passport_1 = __importDefault(require("passport"));
 const routes_1 = require("./routes");
 const dbURL = process.env.NODE_ENV === 'test'
     ? String(process.env.MONGODB_LOCAL_URL)
-    : `${String(process.env.MONGODB_URL)}`;
+    : String(process.env.MONGODB_URL);
 // Connect to DB
 mongoose_1.default
     .connect(dbURL, {

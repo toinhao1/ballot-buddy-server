@@ -13,5 +13,6 @@ module.exports = {
 	watchExtensions: ['ts'],
 	// need to uncomment
 	// single test // "mocha src/test/integrationTests/users.test.ts"
-	spec: ['src/test/**/*.test.ts'],
+	// spec: ['src/test/**/*.test.ts'],
+	spec: ['src/test/unitTests/representative.test.ts'],
 };

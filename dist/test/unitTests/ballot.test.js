@@ -66,4 +66,29 @@ describe('Testing all ballot routes.', function () {
             });
         });
     });
+    describe('POST /selected-measure', function () {
+        it('Should return data about a specific measure with status 200.', function () {
+            return __awaiter(this, void 0, void 0, function* () {
+                const res = yield requester
+                    .post('/selected-measure')
+                    .set('Authorization', currentUserToken)
+                    .send({ measureId: seeds_1.measureId });
+                chai_1.expect(res.body.message).to.equal('Here is the measure data!');
+                chai_1.expect(res.body.specificMeasure).to.haveOwnProperty('title');
+                chai_1.expect(res).to.have.status(200);
+            });
+        });
+        it('Should throw an error with status 400.', function () {
+            return __awaiter(this, void 0, void 0, function* () {
+                const res = yield requester.post('/selected-measure').set('Authorization', currentUserToken);
+                chai_1.expect(res).to.have.status(400);
+            });
+        });
+        it('Should throw an error with status 401.', function () {
+            return __awaiter(this, void 0, void 0, function* () {
+                const res = yield requester.post('/selected-measure');
+                chai_1.expect(res).to.have.status(401);
+            });
+        });
+    });
 });

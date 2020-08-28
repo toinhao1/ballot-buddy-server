@@ -3,7 +3,7 @@ import chaiHttp from 'chai-http';
 
 import app from '../../server';
 import { getOldUserToken } from '../helpers/userData';
-import { userId } from '../helpers/seeds';
+import { userId, measureId } from '../helpers/seeds';
 import { Ballot } from '../../models';
 
 chai.use(chaiHttp);
@@ -43,6 +43,30 @@ describe('Testing all ballot routes.', function () {
 
 		it('Should throw an error with status 401.', async function () {
 			const res = await requester.get('/current-ballot');
+
+			expect(res).to.have.status(401);
+		});
+	});
+	describe('POST /selected-measure', function () {
+		it('Should return data about a specific measure with status 200.', async function () {
+			const res = await requester
+				.post('/selected-measure')
+				.set('Authorization', currentUserToken)
+				.send({ measureId });
+
+			expect(res.body.message).to.equal('Here is the measure data!');
+			expect(res.body.specificMeasure).to.haveOwnProperty('title');
+			expect(res).to.have.status(200);
+		});
+
+		it('Should throw an error with status 400.', async function () {
+			const res = await requester.post('/selected-measure').set('Authorization', currentUserToken);
+
+			expect(res).to.have.status(400);
+		});
+
+		it('Should throw an error with status 401.', async function () {
+			const res = await requester.post('/selected-measure');
 
 			expect(res).to.have.status(401);
 		});

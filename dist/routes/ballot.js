@@ -39,12 +39,12 @@ ballotRouter.get('/current-ballot', passport_1.authenticate('jwt', { session: fa
                 const ballot = statesToIgnore_1.statesToIgnore.hasOwnProperty(req.user.address.state)
                     ? ballotWithoutMeasures
                     : ballotWithMeasure;
-                const saveBallot = new models_1.Ballot({
+                const newBallot = new models_1.Ballot({
                     user: req.user.id,
                     ballot: ballot,
                 });
-                yield saveBallot.save();
-                res.status(200).send({ message: 'Here is your current ballot!', ballot });
+                const savedBallot = yield newBallot.save();
+                res.status(201).send({ message: 'Here is your current ballot!', savedBallot });
             }
         }
         catch (err) {
@@ -53,7 +53,7 @@ ballotRouter.get('/current-ballot', passport_1.authenticate('jwt', { session: fa
         }
     }
     else {
-        res.send({ message: 'You must sign in to request this.' });
+        res.status(401).send({ message: 'You must sign in to request this.' });
     }
 }));
 ballotRouter.post('/selected-measure', passport_1.authenticate('jwt', { session: false }), (req, res) => __awaiter(void 0, void 0, void 0, function* () {

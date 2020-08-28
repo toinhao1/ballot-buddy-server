@@ -39,20 +39,20 @@ ballotRouter.get(
 					const ballot = statesToIgnore.hasOwnProperty(req.user.address.state)
 						? ballotWithoutMeasures
 						: ballotWithMeasure;
-					const saveBallot = new Ballot({
+					const newBallot = new Ballot({
 						user: req.user.id,
 						ballot: ballot,
 					});
 
-					await saveBallot.save();
-					res.status(200).send({ message: 'Here is your current ballot!', ballot });
+					const savedBallot = await newBallot.save();
+					res.status(201).send({ message: 'Here is your current ballot!', savedBallot });
 				}
 			} catch (err) {
 				console.log(err);
 				res.status(400).send({ message: 'There was an error!' });
 			}
 		} else {
-			res.send({ message: 'You must sign in to request this.' });
+			res.status(401).send({ message: 'You must sign in to request this.' });
 		}
 	}
 );
